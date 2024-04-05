@@ -1,0 +1,23 @@
+From 31f8df26f5eab8ed0a61a892c703580bd4d9ae4d Mon Sep 17 00:00:00 2001
+From: Ookiineko <chiisaineko@protonmail.com>
+Date: Fri, 5 Apr 2024 16:05:08 +0900
+Subject: [PATCH] use /proc/self/exe on Cygwin
+
+Signed-off-by: Ookiineko <chiisaineko@protonmail.com>
+---
+ file.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/file.cpp b/file.cpp
+index e433a07..b019c7f 100644
+--- a/file.cpp
++++ b/file.cpp
+@@ -468,7 +468,7 @@ bool Realpath(const std::string& path, std::string* result) {
+ #endif
+ 
+ std::string GetExecutablePath() {
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__CYGWIN__)
+   std::string path;
+   android::base::Readlink("/proc/self/exe", &path);
+   return path;

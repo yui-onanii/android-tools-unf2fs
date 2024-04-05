@@ -1,0 +1,65 @@
+From e7e7893f5a8c5e3266618873839a0f546835dbea Mon Sep 17 00:00:00 2001
+From: Ookiineko <chiisaineko@protonmail.com>
+Date: Fri, 5 Apr 2024 17:49:51 +0900
+Subject: [PATCH] initial Cygwin support
+
+Signed-off-by: Ookiineko <chiisaineko@protonmail.com>
+---
+ include/android_config.h | 19 +++++++++++++++++++
+ lib/libf2fs.c            |  6 ++++++
+ 2 files changed, 25 insertions(+)
+
+diff --git a/include/android_config.h b/include/android_config.h
+index da8abcb..8177478 100644
+--- a/include/android_config.h
++++ b/include/android_config.h
+@@ -74,6 +74,25 @@
+ #endif
+ #endif
+ 
++#if defined(__CYGWIN__)
++#define HAVE_STDLIB_H 1
++#define HAVE_STRING_H 1
++#define HAVE_SYS_IOCTL_H 1
++#define HAVE_SYS_MOUNT_H 1
++#define HAVE_SYS_UTSNAME_H 1
++#define HAVE_SYS_XATTR_H 1
++#define HAVE_UNISTD_H 1
++
++#define HAVE_FALLOCATE 1
++#define HAVE_FSETXATTR 1
++#define HAVE_SPARSE_SPARSE_H 1
++#define HAVE_LIBLZ4 1
++
++#ifdef WITH_SLOAD
++#define HAVE_LIBSELINUX 1
++#endif
++#endif
++
+ #if defined(_WIN32)
+ #define HAVE_SPARSE_SPARSE_H 1
+ #endif
+diff --git a/lib/libf2fs.c b/lib/libf2fs.c
+index c3d5744..8c817be 100644
+--- a/lib/libf2fs.c
++++ b/lib/libf2fs.c
+@@ -36,6 +36,8 @@
+ #endif
+ #ifdef HAVE_LINUX_LIMITS_H
+ #include <linux/limits.h>
++#else
++#include <limits.h>
+ #endif
+ 
+ /* SCSI command for standard inquiry*/
+@@ -883,6 +885,10 @@ void get_kernel_uname_version(__u8 *version)
+ #define BLKSSZGET	DKIOCGETBLOCKCOUNT
+ #endif /* APPLE_DARWIN */
+ 
++#if defined (__CYGWIN__)
++#include <cygwin/fs.h>
++#endif
++
+ #ifndef _WIN32
+ static int open_check_fs(char *path, int flag)
+ {

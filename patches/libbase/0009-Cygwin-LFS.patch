@@ -1,0 +1,23 @@
+From 0a02bb73a80de04e8d689220db8fb2071bd75455 Mon Sep 17 00:00:00 2001
+From: Ookiineko <chiisaineko@protonmail.com>
+Date: Sat, 6 Apr 2024 00:49:45 +0900
+Subject: [PATCH] Cygwin LFS
+
+Signed-off-by: Ookiineko <chiisaineko@protonmail.com>
+---
+ include/android-base/off64_t.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/android-base/off64_t.h b/include/android-base/off64_t.h
+index e6b71b8..df3ebe3 100644
+--- a/include/android-base/off64_t.h
++++ b/include/android-base/off64_t.h
+@@ -16,7 +16,7 @@
+ 
+ #pragma once
+ 
+-#if defined(__APPLE__)
++#if defined(__APPLE__) || defined(__CYGWIN__)
+ /** Mac OS has always had a 64-bit off_t, so it doesn't have off64_t. */
+ typedef off_t off64_t;
+ #endif

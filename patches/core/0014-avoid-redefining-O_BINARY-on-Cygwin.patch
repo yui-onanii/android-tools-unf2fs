@@ -1,0 +1,24 @@
+From c6130a072df0ccaab1e8bace6ace94e581c7cd56 Mon Sep 17 00:00:00 2001
+From: Ookiineko <chiisaineko@protonmail.com>
+Date: Sat, 6 Apr 2024 01:08:14 +0900
+Subject: [PATCH] avoid redefining O_BINARY on Cygwin
+
+Signed-off-by: Ookiineko <chiisaineko@protonmail.com>
+---
+ libsparse/output_file.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/libsparse/output_file.cpp b/libsparse/output_file.cpp
+index fba4f40..5e33196 100644
+--- a/libsparse/output_file.cpp
++++ b/libsparse/output_file.cpp
+@@ -38,7 +38,9 @@
+ #include <android-base/mapped_file.h>
+ 
+ #ifndef _WIN32
++#ifndef __CYGWIN__
+ #define O_BINARY 0
++#endif
+ #else
+ #define ftruncate64 ftruncate
+ #endif

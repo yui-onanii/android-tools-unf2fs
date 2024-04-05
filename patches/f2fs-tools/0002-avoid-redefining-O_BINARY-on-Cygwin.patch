@@ -1,0 +1,24 @@
+From d17e9823c4a7b8e5b4420a8ea9667302ee64b228 Mon Sep 17 00:00:00 2001
+From: Ookiineko <chiisaineko@protonmail.com>
+Date: Sat, 6 Apr 2024 01:09:05 +0900
+Subject: [PATCH] avoid redefining O_BINARY on Cygwin
+
+Signed-off-by: Ookiineko <chiisaineko@protonmail.com>
+---
+ lib/libf2fs.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/lib/libf2fs.c b/lib/libf2fs.c
+index 8c817be..0071d1d 100644
+--- a/lib/libf2fs.c
++++ b/lib/libf2fs.c
+@@ -44,7 +44,9 @@
+ #define MODELINQUIRY	0x12,0x00,0x00,0x00,0x4A,0x00
+ 
+ #ifndef _WIN32 /* O_BINARY is windows-specific flag */
++#ifndef __CYGWIN__
+ #define O_BINARY 0
++#endif
+ #else
+ /* On Windows, wchar_t is 8 bit sized and it causes compilation errors. */
+ #define wchar_t	int

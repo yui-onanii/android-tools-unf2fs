@@ -134,7 +134,7 @@ set(libcutils_SOURCES
 	core/libcutils/strlcpy.c
 	core/libcutils/trace-host.cpp)
 
-if (NOT APPLE AND NOT WIN32)
+if (NOT APPLE AND NOT WIN32 AND NOT CYGWIN)
 	list(APPEND libcutils_SOURCES
 		core/libcutils/canned_fs_config.cpp
 		core/libcutils/fs_config.cpp)

@@ -1,0 +1,24 @@
+From 545d860292262661b87fbca7bb927870c4a46005 Mon Sep 17 00:00:00 2001
+From: Ookiineko <chiisaineko@protonmail.com>
+Date: Fri, 5 Apr 2024 16:00:08 +0900
+Subject: [PATCH] avoid including sys/user.h when its not present
+
+Signed-off-by: Ookiineko <chiisaineko@protonmail.com>
+---
+ cmsg.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/cmsg.cpp b/cmsg.cpp
+index 95db303..d8494cd 100644
+--- a/cmsg.cpp
++++ b/cmsg.cpp
+@@ -20,7 +20,9 @@
+ #include <fcntl.h>
+ #include <stdlib.h>
+ #include <sys/socket.h>
++#ifdef HAVE_SYS_USER_H
+ #include <sys/user.h>
++#endif
+ 
+ #include <memory>
+ 

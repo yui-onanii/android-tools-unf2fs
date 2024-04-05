@@ -88,6 +88,7 @@ add_library(libsepol
 	selinux/libsepol/src/kernel_to_common.c
 	selinux/libsepol/src/mls.c
 	selinux/libsepol/src/policydb.c
+	selinux/libsepol/src/policydb_validate.c
 	selinux/libsepol/src/policydb_convert.c
 	selinux/libsepol/src/policydb_public.c
 	selinux/libsepol/src/services.c

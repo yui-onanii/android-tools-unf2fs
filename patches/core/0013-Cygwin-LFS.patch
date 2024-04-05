@@ -1,0 +1,83 @@
+From 4e7e57bf70167a08e30c61ff24d85ea37e0515a4 Mon Sep 17 00:00:00 2001
+From: Ookiineko <chiisaineko@protonmail.com>
+Date: Sat, 6 Apr 2024 00:49:01 +0900
+Subject: [PATCH] Cygwin LFS
+
+Signed-off-by: Ookiineko <chiisaineko@protonmail.com>
+---
+ libsparse/append2simg.cpp       | 4 ++--
+ libsparse/img2simg.cpp          | 2 +-
+ libsparse/output_file.cpp       | 2 +-
+ libsparse/sparse_read.cpp       | 2 +-
+ libutils/include/utils/Compat.h | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/libsparse/append2simg.cpp b/libsparse/append2simg.cpp
+index d3a43a8..40aa2e8 100644
+--- a/libsparse/append2simg.cpp
++++ b/libsparse/append2simg.cpp
+@@ -32,10 +32,10 @@
+ #define O_BINARY 0
+ #endif
+ 
+-#if defined(__APPLE__) && defined(__MACH__)
++#if (defined(__APPLE__) && defined(__MACH__)) || defined(__CYGWIN__)
+ #define lseek64 lseek
+ #endif
+-#if defined(__APPLE__) && defined(__MACH__)
++#if (defined(__APPLE__) && defined(__MACH__)) || defined(__CYGWIN__)
+ #define lseek64 lseek
+ #define off64_t off_t
+ #endif
+diff --git a/libsparse/img2simg.cpp b/libsparse/img2simg.cpp
+index c390506..911845c 100644
+--- a/libsparse/img2simg.cpp
++++ b/libsparse/img2simg.cpp
+@@ -32,7 +32,7 @@
+ #define O_BINARY 0
+ #endif
+ 
+-#if defined(__APPLE__) && defined(__MACH__)
++#if (defined(__APPLE__) && defined(__MACH__)) || defined(__CYGWIN__)
+ #define lseek64 lseek
+ #define off64_t off_t
+ #endif
+diff --git a/libsparse/output_file.cpp b/libsparse/output_file.cpp
+index 08312e4..fba4f40 100644
+--- a/libsparse/output_file.cpp
++++ b/libsparse/output_file.cpp
+@@ -43,7 +43,7 @@
+ #define ftruncate64 ftruncate
+ #endif
+ 
+-#if defined(__APPLE__) && defined(__MACH__)
++#if (defined(__APPLE__) && defined(__MACH__)) || defined(__CYGWIN__)
+ #define lseek64 lseek
+ #define ftruncate64 ftruncate
+ #define off64_t off_t
+diff --git a/libsparse/sparse_read.cpp b/libsparse/sparse_read.cpp
+index 44f7557..5e556c6 100644
+--- a/libsparse/sparse_read.cpp
++++ b/libsparse/sparse_read.cpp
+@@ -37,7 +37,7 @@
+ #include "sparse_file.h"
+ #include "sparse_format.h"
+ 
+-#if defined(__APPLE__) && defined(__MACH__)
++#if (defined(__APPLE__) && defined(__MACH__)) || defined(__CYGWIN__)
+ #define lseek64 lseek
+ #define off64_t off_t
+ #endif
+diff --git a/libutils/include/utils/Compat.h b/libutils/include/utils/Compat.h
+index 3221899..2c29cb8 100644
+--- a/libutils/include/utils/Compat.h
++++ b/libutils/include/utils/Compat.h
+@@ -23,7 +23,7 @@
+ #include <sys/mman.h>
+ #endif
+ 
+-#if defined(__APPLE__)
++#if defined(__APPLE__) || defined(__CYGWIN__)
+ 
+ /* Mac OS has always had a 64-bit off_t, so it doesn't have off64_t. */
+ static_assert(sizeof(off_t) >= 8, "This code requires that Mac OS have at least a 64-bit off_t.");

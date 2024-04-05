@@ -1,0 +1,23 @@
+From fd30c6c61998d3bf0907914e4f378fec208eedda Mon Sep 17 00:00:00 2001
+From: Ookiineko <chiisaineko@protonmail.com>
+Date: Sat, 6 Apr 2024 00:50:25 +0900
+Subject: [PATCH] Cygwin LFS
+
+Signed-off-by: Ookiineko <chiisaineko@protonmail.com>
+---
+ zip_archive.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/zip_archive.cc b/zip_archive.cc
+index 5217123..6ffb89a 100644
+--- a/zip_archive.cc
++++ b/zip_archive.cc
+@@ -42,7 +42,7 @@
+ #include <span>
+ #include <vector>
+ 
+-#if defined(__APPLE__)
++#if defined(__APPLE__) || defined(__CYGWIN__)
+ #define lseek64 lseek
+ #endif
+ 

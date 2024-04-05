@@ -1,0 +1,57 @@
+From 097249ea051a30c0dc2af707c2df30bbc5c1a6bc Mon Sep 17 00:00:00 2001
+From: Ookiineko <chiisaineko@protonmail.com>
+Date: Fri, 5 Apr 2024 19:13:33 +0900
+Subject: [PATCH] initial Cygwin support
+
+Signed-off-by: Ookiineko <chiisaineko@protonmail.com>
+---
+ lib/config.h         | 5 ++++-
+ lib/ext2fs/getsize.c | 5 ++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/lib/config.h b/lib/config.h
+index c228860..cce7e90 100644
+--- a/lib/config.h
++++ b/lib/config.h
+@@ -37,7 +37,7 @@
+ #if defined(_WIN32)
+ # define HAVE_LINUX_TYPES_H 1
+ #endif
+-#if defined(__APPLE__) || defined(__linux__)
++#if defined(__APPLE__) || defined(__linux__) || defined(__CYGWIN__)
+ # define HAVE_FCNTL 1
+ # define HAVE_FSYNC 1
+ # define HAVE_GETPAGESIZE 1
+@@ -56,6 +56,9 @@
+ #endif
+ #ifdef __APPLE__
+ # define HAVE_GETMNTINFO 1
++#elif defined(__CYGWIN__)
++# define HAVE_MNTENT_H 1
++# define HAVE_SETMNTENT 1
+ #endif
+ #if defined(__linux__)
+ # define HAVE_EXT2_IOCTLS 1
+diff --git a/lib/ext2fs/getsize.c b/lib/ext2fs/getsize.c
+index a028634..7ca6210 100644
+--- a/lib/ext2fs/getsize.c
++++ b/lib/ext2fs/getsize.c
+@@ -40,6 +40,9 @@
+ #ifdef HAVE_SYS_DISK_H
+ #include <sys/disk.h>
+ #endif
++#ifdef __CYGWIN__
++#include <cygwin/fs.h>
++#endif
+ #ifdef __linux__
+ #include <sys/utsname.h>
+ #endif
+@@ -63,7 +66,7 @@
+ #include "ext2_fs.h"
+ #include "ext2fs.h"
+ 
+-#if defined(__CYGWIN__) || defined (WIN32)
++#if defined (WIN32)
+ #include "windows.h"
+ #include "winioctl.h"
+ 

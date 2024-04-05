@@ -16,6 +16,16 @@ if(APPLE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_DARWIN_C_SOURCE -D__DARWIN_C_LEVEL=__DARWIN_C_FULL")
 endif()
 
+if(CYGWIN)
+	add_compile_definitions(_GNU_SOURCE)
+endif()
+
+include(CheckIncludeFile)
+CHECK_INCLUDE_FILE("sys/user.h" HAVE_SYS_USER_H)
+if(HAVE_SYS_USER_H)
+	add_compile_definitions(HAVE_SYS_USER_H)
+endif()
+
 # Different versions of clang require a different set of flags for -ftrivial-auto-var-init
 # Simplify this contruct once old clang version support is dropped
 include(CheckCXXCompilerFlag)
@@ -150,7 +160,7 @@ install(TARGETS
 	ext2simg
 	DESTINATION bin)
 
-if(NOT APPLE)
+if(NOT APPLE AND NOT CYGWIN)
 	install(TARGETS
 		e2fsdroid
 		DESTINATION bin)
