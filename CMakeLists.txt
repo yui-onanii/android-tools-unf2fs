@@ -40,6 +40,7 @@ configure_file(platform_tools_version.h.in vendor/platform_tools_version.h @ONLY
 # patching, building and installing the software.
 set(ANDROID_PATCH_DIR ${CMAKE_CURRENT_SOURCE_DIR}/patches)
 add_subdirectory(vendor)
+add_subdirectory(src)
 
 # CPack configuration for creating source tarballs which already include
 # patched versions of the vendored dependencies.

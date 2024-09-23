@@ -1,0 +1,6 @@
+add_executable(unf2fs
+	unf2fs/main.c)
+
+install(TARGETS
+	unf2fs
+	DESTINATION bin)
