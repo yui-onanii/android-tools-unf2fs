@@ -120,7 +120,7 @@ main (int argc, char *argv[])
     switch (opt)
     {
       case ':':
-        die("option -%c requires a value\n", optopt);
+        die("option %s requires a value\n", argv[optind - 1]);
       case 'h':
         die_usage ();
       case 'o':
