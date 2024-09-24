@@ -71,6 +71,8 @@ target_compile_definitions(libselinux PRIVATE
 	-DPCRE2_CODE_UNIT_WIDTH=8)
 target_include_directories(libselinux PUBLIC
 	selinux/libselinux/include selinux/libsepol/include)
+target_link_libraries(libselinux PUBLIC
+	PkgConfig::libpcre2-8)
 
 add_library(libsepol
 	selinux/libsepol/src/assertion.c
