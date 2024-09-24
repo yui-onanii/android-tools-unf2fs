@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <getopt.h>
 
 #ifndef BUILD_DATE
@@ -64,6 +65,26 @@ assert_unexpected_args (size_t n, char *args[])
 
   printf (")\n");
   exit (1);
+}
+
+static inline void
+abort_unexpected_arg (const char *opt)
+{
+  const char *pos;
+  size_t len;
+  char *buff;
+
+  pos = strchr (opt, '=');
+  if (!pos)
+    abort ();
+
+  len = pos - opt;
+  buff = alloca (len + 1);
+
+  memcpy (buff, opt, len);
+  buff[len] = '\0';
+
+  die("option %s does not take a value\n", buff);
 }
 
 static struct option long_opts[] = {
@@ -129,6 +150,11 @@ main (int argc, char *argv[])
       case '?':
         if (optopt)
         {
+          switch (optopt)
+          {
+            case 'h':
+              abort_unexpected_arg (argv[optind - 1]);
+          }
           die("no such option: \"-%c\"\n", optopt);
         }
         else
