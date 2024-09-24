@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <getopt.h>
 
-#include <f2fs_fs.h>
-
 #ifndef BUILD_DATE
 # define BUILD_DATE     "yymmdd"
 #endif
