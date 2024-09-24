@@ -1,5 +1,7 @@
 add_executable(unf2fs
 	unf2fs/main.c)
+target_link_libraries(unf2fs PRIVATE
+	libf2fs)
 
 install(TARGETS
 	unf2fs
