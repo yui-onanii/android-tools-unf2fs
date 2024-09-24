@@ -1,3 +1,4 @@
+if(FALSE)
 protobuf_generate_cpp(ADB_APP_PROCESSES_PROTO_SRCS ADB_APP_PROCESSES_PROTO_HDRS
 	adb/proto/app_processes.proto)
 protobuf_generate_cpp(ADB_HOST_PROTO_SRCS ADB_HOST_PROTO_HDRS
@@ -92,6 +93,7 @@ target_include_directories(libadb_tls_connection_defaults PUBLIC
 	adb/tls/include
 	boringssl/include
 	libbase/include)
+endif()
 
 add_library(liblog STATIC
 	logging/liblog/log_event_list.cpp
@@ -145,6 +147,7 @@ target_include_directories(libcutils PRIVATE
 target_include_directories(libcutils PUBLIC
 	core/libcutils/include libbase/include)
 
+if (FALSE)
 add_library(libdiagnoseusb STATIC
 	core/diagnose_usb/diagnose_usb.cpp)
 target_include_directories(libdiagnoseusb PUBLIC
@@ -224,4 +227,5 @@ endif()
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/adb/docs/user/adb.1)
 	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/adb/docs/user/adb.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+endif()
 endif()

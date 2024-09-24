@@ -15,7 +15,7 @@ option(ANDROID_TOOLS_LIBUSB_ENABLE_UDEV "Enable udev for device enumeration and 
 
 # Install bash/zsh completion files.
 set(COMPLETION_COMMON_DIR "${CMAKE_INSTALL_FULL_DATADIR}/android-tools/completions")
-add_subdirectory(completions)
+#add_subdirectory(completions)
 
 # Android provides it's own version of mke2fs which is incompatible with
 # the version shipped by e2fsprogs. To prevent a name clash we install
