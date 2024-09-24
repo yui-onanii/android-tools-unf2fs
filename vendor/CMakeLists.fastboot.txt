@@ -12,6 +12,10 @@ target_include_directories(libzip PUBLIC
 	core/include
 	logging/liblog/include
 	libbase/include)
+if(ANDROID_TOOLS_USE_BUNDLED_GTEST)
+target_include_directories(libzip PRIVATE
+	googletest/googletest/include)
+endif()
 
 add_library(libutil STATIC
 	core/libutils/FileMap.cpp
