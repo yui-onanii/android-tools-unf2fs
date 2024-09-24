@@ -70,7 +70,7 @@ assert_unexpected_args (size_t n, char *args[])
 static struct option long_opts[] = {
   { "help",     no_argument,       NULL, 'h' },
   { "out-path", required_argument, NULL, 'o' },
-  { NULL,       0,                 NULL, 0   }
+  { NULL,       0,                 NULL,  0  }
 };
 
 static inline void
