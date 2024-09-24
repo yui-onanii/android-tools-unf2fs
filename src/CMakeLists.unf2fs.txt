@@ -1,5 +1,10 @@
+string(TIMESTAMP BUILD_DATE "%y%m%d")
+
 add_executable(unf2fs
+	unf2fs_tools/unf2fs.c
 	unf2fs_tools/main.c)
+target_compile_definitions(unf2fs PRIVATE
+	-DBUILD_DATE="${BUILD_DATE}")
 target_link_libraries(unf2fs PRIVATE
 	libf2fs)
 
