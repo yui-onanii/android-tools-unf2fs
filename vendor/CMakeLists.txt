@@ -94,6 +94,10 @@ else()
 	message(STATUS "Found fmt: ${fmt_DIR} (version ${fmt_VERSION})")
 endif()
 
+if(NOT ANDROID_TOOLS_USE_BUNDLED_GTEST)
+	find_package(GTest REQUIRED)
+endif()
+
 find_package(PkgConfig REQUIRED)
 if(STATIC_BUILD)
 list(INSERT CMAKE_FIND_LIBRARY_PREFIXES 0 ${CMAKE_STATIC_LIBRARY_PREFIX})

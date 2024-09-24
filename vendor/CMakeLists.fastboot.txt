@@ -15,6 +15,9 @@ target_include_directories(libzip PUBLIC
 if(ANDROID_TOOLS_USE_BUNDLED_GTEST)
 target_include_directories(libzip PRIVATE
 	googletest/googletest/include)
+else()
+target_include_directories(libzip PRIVATE
+	${GTEST_INCLUDE_DIRS})
 endif()
 
 add_library(libutil STATIC
