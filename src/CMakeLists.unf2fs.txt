@@ -1,5 +1,5 @@
 add_executable(unf2fs
-	unf2fs/main.c)
+	unf2fs_tools/main.c)
 target_link_libraries(unf2fs PRIVATE
 	libf2fs)
 
