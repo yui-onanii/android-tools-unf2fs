@@ -67,31 +67,43 @@ assert_unexpected_args (size_t n, char *args[])
   exit (1);
 }
 
-static inline void
-abort_unexpected_arg (const char *opt)
-{
-  const char *pos;
-  size_t len;
-  char *buff;
-
-  pos = strchr (opt, '=');
-  if (!pos)
-    abort ();
-
-  len = pos - opt;
-  buff = alloca (len + 1);
-
-  memcpy (buff, opt, len);
-  buff[len] = '\0';
-
-  die("option %s does not take a value\n", buff);
-}
-
 static struct option long_opts[] = {
   { "help",     no_argument,       NULL, 'h' },
   { "out-path", required_argument, NULL, 'o' },
   { NULL,       0,                 NULL, 0   }
 };
+
+static inline void
+assert_unexpected_arg (const char *opt)
+{
+  struct option *option;
+  const char *pos;
+  size_t len;
+  char *buff;
+
+  for (option = long_opts; option->name; option++)
+  {
+    if (option->val == optopt)
+    {
+      if (option->has_arg == no_argument)
+      {
+        pos = strchr (opt, '=');
+        if (!pos)
+          abort ();
+
+        len = pos - opt;
+        buff = alloca (len + 1);
+
+        memcpy (buff, opt, len);
+        buff[len] = '\0';
+
+        die("option %s does not take a value\n", buff);
+      }
+
+      break;
+    }
+  }
+}
 
 const char *
 calc_suggestion(const char *dir[],
@@ -150,11 +162,7 @@ main (int argc, char *argv[])
       case '?':
         if (optopt)
         {
-          switch (optopt)
-          {
-            case 'h':
-              abort_unexpected_arg (argv[optind - 1]);
-          }
+          assert_unexpected_arg (argv[optind - 1]);
           die("no such option: \"-%c\"\n", optopt);
         }
         else
