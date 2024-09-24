@@ -1,9 +1,12 @@
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
 #include <f2fs_fs.h>
 
 #include "fsck.h"
+
+#define err(s, ...)   printf ("Error: ", ##__VA_ARGS__)
 
 struct f2fs_fsck gfsck;
 
@@ -12,6 +15,25 @@ INIT_FEATURE_TABLE;
 static inline void
 do_unfs (struct f2fs_sb_info *sbi)
 {
+  struct f2fs_node *root;
+  struct node_info ni;
+
+  root = malloc (sizeof (struct f2fs_node));
+  if (!root)
+  {
+    err("can't malloc root node");
+    return;
+  }
+
+  get_node_info (sbi, F2FS_ROOT_INO(sbi), &ni);
+  if (dev_read_block (root, ni.blk_addr) < 0)
+  {
+    err("can't read root node");
+    goto out;
+  }
+
+out:
+  free (root);
 }
 
 void
