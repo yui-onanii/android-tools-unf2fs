@@ -25,6 +25,7 @@ Installation
     $ make install
 
 pass `-DSTATIC_BUILD=ON` to cmake for static build
+(to link shared libgcc and libc++, use `-DPARTIAL_STATIC=ON`)
 
 
 

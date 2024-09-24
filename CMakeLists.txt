@@ -14,6 +14,11 @@ option(ANDROID_TOOLS_USE_BUNDLED_LIBUSB "Use bundled libusb library instead of s
 option(ANDROID_TOOLS_USE_BUNDLED_GTEST "Use bundled googletest library instead of system provided one" OFF)
 option(ANDROID_TOOLS_LIBUSB_ENABLE_UDEV "Enable udev for device enumeration and hotplug support" OFF)
 option(STATIC_BUILD "Build static binaries" OFF)
+option(PARTIAL_STATIC "Build standalone binaries, but link system binaries dynamically" OFF)
+
+if(PARTIAL_STATIC AND NOT STATIC_BUILD)
+set(STATIC_BUILD ON)
+endif()
 
 # Install bash/zsh completion files.
 set(COMPLETION_COMMON_DIR "${CMAKE_INSTALL_FULL_DATADIR}/android-tools/completions")
