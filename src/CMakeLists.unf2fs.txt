@@ -18,6 +18,7 @@ set(libf2fs_extra_src_files
 add_executable(unf2fs
 	${libf2fs_extra_src_files}
 	unf2fs_tools/unf2fs.c
+	unf2fs_tools/suggest.c
 	unf2fs_tools/main.c)
 target_compile_definitions(unf2fs PRIVATE
 	-DBUILD_DATE="${BUILD_DATE}")

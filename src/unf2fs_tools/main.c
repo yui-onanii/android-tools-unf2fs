@@ -1,3 +1,4 @@
+#include <alloca.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,6 +66,42 @@ assert_unexpected_args (size_t n, char *args[])
   exit (1);
 }
 
+static struct option long_opts[] = {
+  { "help",     no_argument,       NULL, 'h' },
+  { "out-path", required_argument, NULL, 'o' },
+  { NULL,       0,                 NULL, 0   }
+};
+
+const char *
+calc_suggestion(const char *dir[],
+                size_t dir_size,
+                const char *name);
+
+__attribute__((noreturn)) static inline void
+abort_unk_long_opt (const char *opt)
+{
+  size_t n_opts;
+  const char **names;
+  size_t i;
+  const char *suggest;
+
+  for (n_opts = 0; long_opts[n_opts].name; n_opts++);
+  names = alloca (n_opts * sizeof (const char *));
+  for (i = 0; i < n_opts; i++)
+    names[i] = long_opts[i].name;
+
+  suggest = calc_suggestion (names, n_opts, opt + 2);
+  if (suggest)
+  {
+    die("no such option: \"%s\". "
+        "Did you mean \"--%s\"?\n", opt, suggest);
+  }
+  else
+  {
+    die("no such option: \"%s\"\n", opt);
+  }
+}
+
 void
 unf2fs_main (const char *input,
              const char *out_path);
@@ -73,11 +110,6 @@ int
 main (int argc, char *argv[])
 {
   int opt;
-  struct option long_opts[] = {
-    { "help",     no_argument,       NULL, 'h' },
-    { "out-path", required_argument, NULL, 'o' },
-    { NULL,       0,                 NULL, 0   }
-  };
   char *input;
   char *out_path = ".";
 
@@ -101,7 +133,7 @@ main (int argc, char *argv[])
         }
         else
         {
-          die("no such option: \"%s\"\n", argv[optind - 1]);
+          abort_unk_long_opt (argv[optind - 1]);
         }
       default:
         abort ();
