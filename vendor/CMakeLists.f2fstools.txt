@@ -31,7 +31,7 @@ add_executable(make_f2fs
 	f2fs-tools/mkfs/f2fs_format_main.c)
 
 target_link_libraries(make_f2fs PRIVATE
-	libf2fs libsparse z)
+	libf2fs libsparse ZLIB::ZLIB)
 
 set(fsck_main_src_files
 	f2fs-tools/fsck/dir.c
@@ -68,6 +68,6 @@ target_include_directories(sload_f2fs PRIVATE
 	core/libcutils/include)
 
 target_link_libraries(sload_f2fs PRIVATE
-	libext2_uuid libsparse libselinux libcutils z
+	libext2_uuid libsparse libselinux libcutils ZLIB::ZLIB
 	PkgConfig::libpcre2-8
 	PkgConfig::liblz4)

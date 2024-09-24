@@ -111,6 +111,7 @@ pkg_check_modules(libzstd REQUIRED IMPORTED_TARGET libzstd)
 find_package(Protobuf CONFIG)
 find_package(Protobuf REQUIRED)
 endif()
+find_package(ZLIB REQUIRED)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
