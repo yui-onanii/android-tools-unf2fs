@@ -83,25 +83,22 @@ assert_unexpected_arg (const char *opt)
 
   for (option = long_opts; option->name; option++)
   {
-    if (option->val == optopt)
-    {
-      if (option->has_arg == no_argument)
-      {
-        pos = strchr (opt, '=');
-        if (!pos)
-          abort ();
-
-        len = pos - opt;
-        buff = alloca (len + 1);
-
-        memcpy (buff, opt, len);
-        buff[len] = '\0';
-
-        die("option %s does not take a value\n", buff);
-      }
-
+    if (option->val != optopt)
+      continue;
+    if (option->has_arg != no_argument)
       abort ();
-    }
+
+    pos = strchr (opt, '=');
+    if (!pos)
+      abort ();
+
+    len = pos - opt;
+    buff = alloca (len + 1);
+
+    memcpy (buff, opt, len);
+    buff[len] = '\0';
+
+    die("option %s does not take a value\n", buff);
   }
 }
 
