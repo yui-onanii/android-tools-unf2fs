@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -36,11 +37,30 @@ out:
   free (root);
 }
 
+static inline int
+test_file (const char *path)
+{
+  int fd;
+
+  fd = open (path, O_RDWR);
+  if (fd < 0)
+    return fd;
+
+  close (fd);
+  return 0;
+}
+
 void
 unf2fs_main (const char *input,
              const char *out_path)
 {
   struct f2fs_sb_info *sbi;
+
+  if (test_file (input) < 0)
+  {
+    err("Cannot open file %s\n", input);
+    return;
+  }
 
   f2fs_init_configuration ();
   c.devices[0].path = strdup (input);
