@@ -80,7 +80,7 @@ do_unfs (struct f2fs_sb_info *sbi)
   END_LIBF2FS_CALL();
   if (ret < 0)
   {
-    err("can't read root node");
+    err("can't read root node\n");
     goto out;
   }
 
