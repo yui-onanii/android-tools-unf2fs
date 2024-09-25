@@ -69,10 +69,7 @@ do_unfs (struct f2fs_sb_info *sbi)
 
   root = malloc (sizeof (struct f2fs_node));
   if (!root)
-  {
-    err("can't malloc root node");
-    return;
-  }
+    abort ();
 
   BEGIN_LIBF2FS_CALL();
     get_node_info (sbi, F2FS_ROOT_INO(sbi), &ni);
@@ -124,13 +121,19 @@ unf2fs_main (const char *input,
     ret = f2fs_get_device_info ();
   END_LIBF2FS_CALL();
   if (ret < 0)
+  {
+    err("can't get image info\n");
     return;
+  }
 
   BEGIN_LIBF2FS_CALL();
     ret = f2fs_get_f2fs_info ();
   END_LIBF2FS_CALL();
   if (ret < 0)
+  {
+    err("can't get f2fs info\n");
     return;
+  }
 
   memset (&gfsck, 0, sizeof (gfsck));
   gfsck.sbi.fsck = &gfsck;
@@ -140,7 +143,10 @@ unf2fs_main (const char *input,
     ret = f2fs_do_mount (sbi);
   END_LIBF2FS_CALL();
   if (ret)
+  {
+    err("can't mount image\n");
     goto out_err;
+  }
 
   do_unfs (sbi);
 
@@ -149,7 +155,12 @@ unf2fs_main (const char *input,
     ret = f2fs_finalize_device ();
   END_LIBF2FS_CALL();
   if (ret)
+  {
+#ifndef NDEBUG
+    err("can't finalize libf2fs\n");
+#endif
     return;
+  }
 
   return;
 
