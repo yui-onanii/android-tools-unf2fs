@@ -8,6 +8,14 @@
 
 #include "fsck.h"
 
+#define BEGIN_LIBF2FS_CALL()    \
+{                               \
+  set_stdout (0)
+
+#define END_LIBF2FS_CALL()      \
+  set_stdout (1);               \
+}
+
 #define err(s, ...)   printf ("Error: " s, ##__VA_ARGS__)
 
 struct f2fs_fsck gfsck;
@@ -15,9 +23,48 @@ struct f2fs_fsck gfsck;
 INIT_FEATURE_TABLE;
 
 static inline void
+set_stdout (int enabled)
+{
+#ifdef NDEBUG
+  static int saved_fd = -1;
+  int null_fd;
+
+  if (enabled)
+  {
+    if (saved_fd < 0)
+      abort ();
+
+    if (dup2 (saved_fd, STDOUT_FILENO) < 0)
+      abort ();
+
+    close (saved_fd);
+    saved_fd = -1;
+  }
+  else
+  {
+    if (saved_fd >= 0)
+      abort ();
+
+    saved_fd = dup (STDOUT_FILENO);
+    if (saved_fd < 0)
+      abort ();
+
+    null_fd = open ("/dev/null", O_WRONLY);
+    if (null_fd < 0)
+      abort ();
+
+    if (dup2 (null_fd, STDOUT_FILENO) < 0)
+      abort ();
+    close (null_fd);
+  }
+#endif
+}
+
+static inline void
 do_unfs (struct f2fs_sb_info *sbi)
 {
   struct node_info ni;
+  int ret;
   struct f2fs_node *root;
 
   root = malloc (sizeof (struct f2fs_node));
@@ -27,8 +74,11 @@ do_unfs (struct f2fs_sb_info *sbi)
     return;
   }
 
-  get_node_info (sbi, F2FS_ROOT_INO(sbi), &ni);
-  if (dev_read_block (root, ni.blk_addr) < 0)
+  BEGIN_LIBF2FS_CALL();
+    get_node_info (sbi, F2FS_ROOT_INO(sbi), &ni);
+    ret = dev_read_block (root, ni.blk_addr);
+  END_LIBF2FS_CALL();
+  if (ret < 0)
   {
     err("can't read root node");
     goto out;
@@ -55,6 +105,7 @@ void
 unf2fs_main (const char *input,
              const char *out_path)
 {
+  int ret;
   struct f2fs_sb_info *sbi;
 
   if (test_file (input) < 0)
@@ -63,26 +114,41 @@ unf2fs_main (const char *input,
     return;
   }
 
-  f2fs_init_configuration ();
+  BEGIN_LIBF2FS_CALL();
+    f2fs_init_configuration ();
+  END_LIBF2FS_CALL();
   c.devices[0].path = strdup (input);
-  check_block_struct_sizes ();
 
-  if (f2fs_get_device_info () < 0)
+  BEGIN_LIBF2FS_CALL();
+    check_block_struct_sizes ();
+    ret = f2fs_get_device_info ();
+  END_LIBF2FS_CALL();
+  if (ret < 0)
     return;
-  if (f2fs_get_f2fs_info () < 0)
+
+  BEGIN_LIBF2FS_CALL();
+    ret = f2fs_get_f2fs_info ();
+  END_LIBF2FS_CALL();
+  if (ret < 0)
     return;
 
   memset (&gfsck, 0, sizeof (gfsck));
   gfsck.sbi.fsck = &gfsck;
   sbi = &gfsck.sbi;
 
-  if (f2fs_do_mount (sbi))
+  BEGIN_LIBF2FS_CALL();
+    ret = f2fs_do_mount (sbi);
+  END_LIBF2FS_CALL();
+  if (ret)
     goto out_err;
 
   do_unfs (sbi);
 
-  f2fs_do_umount (sbi);
-  if (f2fs_finalize_device ())
+  BEGIN_LIBF2FS_CALL();
+    f2fs_do_umount (sbi);
+    ret = f2fs_finalize_device ();
+  END_LIBF2FS_CALL();
+  if (ret)
     return;
 
   return;
@@ -92,5 +158,7 @@ out_err:
     free (sbi->ckpt);
   if (sbi->raw_super)
     free (sbi->raw_super);
-  f2fs_release_sparse_resource ();
+  BEGIN_LIBF2FS_CALL();
+    f2fs_release_sparse_resource ();
+  END_LIBF2FS_CALL();
 }
