@@ -6,7 +6,7 @@
 
 #include "fsck.h"
 
-#define err(s, ...)   printf ("Error: ", ##__VA_ARGS__)
+#define err(s, ...)   printf ("Error: " s, ##__VA_ARGS__)
 
 struct f2fs_fsck gfsck;
 
