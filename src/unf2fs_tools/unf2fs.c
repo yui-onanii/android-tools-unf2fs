@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include <f2fs_fs.h>
@@ -86,16 +87,36 @@ out:
 }
 
 static inline int
-test_file (const char *path)
+assert_image (const char *path)
 {
   int fd;
+  struct stat fs;
+  __le32 buff;
+  __le32 magic = 0;
+  int res = -1;
 
-  fd = open (path, O_RDWR);
-  if (fd < 0)
-    return fd;
+  if ((fd = open (path, O_RDWR)) < 0
+      || fstat (fd, &fs) < 0)
+  {
+    err("Cannot open file %s\n", path);
+    goto out;
+  }
 
-  close (fd);
-  return 0;
+  if (fs.st_size < 4096 ||
+      lseek (fd, F2FS_SUPER_OFFSET, SEEK_SET) != 1024
+      || read (fd, &buff, sizeof (buff)) != 4 ||
+      (magic = le32_to_cpu(buff)) != F2FS_SUPER_MAGIC)
+  {
+    err("bad magic %x != 0xf2f52010u\n", magic);
+    goto out;
+  }
+
+  res = 0;
+
+out:
+  if (fd >= 0)
+    close (fd);
+  return res;
 }
 
 void
@@ -105,11 +126,8 @@ unf2fs_main (const char *input,
   int ret;
   struct f2fs_sb_info *sbi;
 
-  if (test_file (input) < 0)
-  {
-    err("Cannot open file %s\n", input);
+  if (assert_image (input) < 0)
     return;
-  }
 
   BEGIN_LIBF2FS_CALL();
     f2fs_init_configuration ();
