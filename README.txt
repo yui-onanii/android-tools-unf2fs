@@ -19,6 +19,9 @@ Dependencies
 Installation
 ============
 
+clone this project with `--recursive --shallow-submodules`
+or run `git submodule update --init --depth 1`
+
     $ mkdir build && cd build
     $ cmake ..
     $ make
