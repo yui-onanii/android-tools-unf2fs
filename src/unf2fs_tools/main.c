@@ -100,7 +100,7 @@ assert_unexpected_arg (const char *opt)
         die("option %s does not take a value\n", buff);
       }
 
-      break;
+      abort ();
     }
   }
 }
