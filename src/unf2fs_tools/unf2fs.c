@@ -28,36 +28,25 @@ set_stdout (int enabled)
 {
 #ifdef NDEBUG
   static int saved_fd = -1;
-  int null_fd;
+  int nulfd;
 
   if (enabled)
   {
-    if (saved_fd < 0)
-      abort ();
-
-    if (dup2 (saved_fd, STDOUT_FILENO) < 0)
+    if (saved_fd < 0 ||
+        dup2 (saved_fd, STDOUT_FILENO) < 0)
       abort ();
 
     close (saved_fd);
     saved_fd = -1;
+    return;
   }
-  else
-  {
-    if (saved_fd >= 0)
-      abort ();
 
-    saved_fd = dup (STDOUT_FILENO);
-    if (saved_fd < 0)
-      abort ();
-
-    null_fd = open ("/dev/null", O_WRONLY);
-    if (null_fd < 0)
-      abort ();
-
-    if (dup2 (null_fd, STDOUT_FILENO) < 0)
-      abort ();
-    close (null_fd);
-  }
+  if (saved_fd >= 0 ||
+      (saved_fd = dup (STDOUT_FILENO)) < 0 ||
+      (nulfd = open ("/dev/null", O_WRONLY)) < 0
+      || dup2 (nulfd, STDOUT_FILENO) < 0)
+    abort ();
+  close (nulfd);
 #endif
 }
 
