@@ -26,7 +26,3 @@ target_include_directories(unf2fs PRIVATE
 	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck)
 target_link_libraries(unf2fs PRIVATE
 	libf2fs libsparse ZLIB::ZLIB)
-
-install(TARGETS
-	unf2fs
-	DESTINATION bin)
