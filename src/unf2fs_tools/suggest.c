@@ -22,9 +22,11 @@ substitution_cost(char a, char b)
         // Not the same, not a case flip.
         return MOVE_COST;
     }
+
     if (a == b) {
         return 0;
     }
+
     if ('A' <= a && a <= 'Z') {
         a += ('a' - 'A');
     }
@@ -34,6 +36,7 @@ substitution_cost(char a, char b)
     if (a == b) {
         return CASE_COST;
     }
+
     return MOVE_COST;
 }
 
@@ -132,17 +135,20 @@ calc_suggestion(const char *dir[],
     const char *suggestion = NULL;
     size_t name_size = strlen(name);
     size_t max_size = name_size;
+
     for (int i = 0; i < dir_size; i++) {
         size_t len = strlen(dir[i]);
         if (len > max_size)
             max_size = len;
     }
+
     size_t buffer[max_size];
     for (size_t i = 0; i < dir_size; ++i) {
         const char *item = dir[i];
         if (!strcmp(name, item)) {
             continue;
         }
+
         size_t item_size = strlen(item);
         // No more than 1/3 of the involved characters should need changed.
         ssize_t max_distance = (name_size + item_size + 3) * MOVE_COST / 6;
