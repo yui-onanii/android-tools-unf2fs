@@ -16,8 +16,8 @@ INIT_FEATURE_TABLE;
 static inline void
 do_unfs (struct f2fs_sb_info *sbi)
 {
-  struct f2fs_node *root;
   struct node_info ni;
+  struct f2fs_node *root;
 
   root = malloc (sizeof (struct f2fs_node));
   if (!root)
