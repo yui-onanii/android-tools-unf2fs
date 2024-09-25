@@ -27,7 +27,7 @@ or run `git submodule update --init --depth 1`
     $ make
     $ make install
 
-pass `-DSTATIC_BUILD=ON` to cmake for static build
+pass `-DSTATIC_BUILD=ON` to cmake for static build (Requires libXXX.a)
 (to link shared libgcc and libc++, use `-DPARTIAL_STATIC=ON`)
 
 
