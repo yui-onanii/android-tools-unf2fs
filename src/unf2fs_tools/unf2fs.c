@@ -54,7 +54,8 @@ void
 do_traverse (struct f2fs_node *root);
 
 static inline void
-do_unfs (struct f2fs_sb_info *sbi)
+do_unfs (struct f2fs_sb_info *sbi,
+         const char *out_path)
 {
   struct node_info ni;
   int ret;
@@ -160,7 +161,7 @@ unf2fs_main (const char *input,
     goto out_err;
   }
 
-  do_unfs (sbi);
+  do_unfs (sbi, out_path);
 
   BEGIN_LIBF2FS_CALL();
     f2fs_do_umount (sbi);
