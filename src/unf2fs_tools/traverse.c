@@ -5,6 +5,8 @@
 
 #include <f2fs_fs.h>
 
+#include "f2fs.h"
+
 #define measure(t)                                \
 {                                                 \
   if (clock_gettime (CLOCK_MONOTONIC, &t) < 0)    \
@@ -42,7 +44,9 @@ elapsed (struct timespec start,
 }
 
 void
-do_traverse (struct f2fs_node *root)
+do_traverse (struct f2fs_sb_info *sbi,
+             struct f2fs_node *root,
+             const char *out_path)
 {
   struct timespec start;
   struct timespec end;
