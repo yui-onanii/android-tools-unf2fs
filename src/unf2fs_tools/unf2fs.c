@@ -50,6 +50,9 @@ set_stdout (int enabled)
 #endif
 }
 
+void
+do_traverse (struct f2fs_node *root);
+
 static inline void
 do_unfs (struct f2fs_sb_info *sbi)
 {
@@ -70,6 +73,8 @@ do_unfs (struct f2fs_sb_info *sbi)
     err("can't read root node\n");
     goto out;
   }
+
+  do_traverse (root);
 
 out:
   free (root);
