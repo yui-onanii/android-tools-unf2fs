@@ -7,12 +7,12 @@
 
 #include "fsck.h"
 
-#define BEGIN_LIBF2FS_CALL()    \
-{                               \
+#define BEGIN_QUIET()   \
+{                       \
   set_stdout (0)
 
-#define END_LIBF2FS_CALL()      \
-  set_stdout (1);               \
+#define END_QUIET()     \
+  set_stdout (1);       \
 }
 
 #define err(s, ...)   printf ("Error: " s, ##__VA_ARGS__)
@@ -65,10 +65,8 @@ do_unfs (struct f2fs_sb_info *sbi,
   if (!root)
     abort ();
 
-  BEGIN_LIBF2FS_CALL();
-    get_node_info (sbi, F2FS_ROOT_INO(sbi), &ni);
-    ret = dev_read_block (root, ni.blk_addr);
-  END_LIBF2FS_CALL();
+  get_node_info (sbi, F2FS_ROOT_INO(sbi), &ni);
+  ret = dev_read_block (root, ni.blk_addr);
   if (ret < 0)
   {
     err("can't read root node\n");
@@ -124,24 +122,22 @@ unf2fs_main (const char *input,
   if (assert_image (input) < 0)
     return;
 
-  BEGIN_LIBF2FS_CALL();
-    f2fs_init_configuration ();
-  END_LIBF2FS_CALL();
+  f2fs_init_configuration ();
   c.devices[0].path = strdup (input);
+  check_block_struct_sizes ();
 
-  BEGIN_LIBF2FS_CALL();
-    check_block_struct_sizes ();
+  BEGIN_QUIET();
     ret = f2fs_get_device_info ();
-  END_LIBF2FS_CALL();
+  END_QUIET();
   if (ret < 0)
   {
     err("can't get image info\n");
     return;
   }
 
-  BEGIN_LIBF2FS_CALL();
+  BEGIN_QUIET();
     ret = f2fs_get_f2fs_info ();
-  END_LIBF2FS_CALL();
+  END_QUIET();
   if (ret < 0)
   {
     err("can't get f2fs info\n");
@@ -152,9 +148,9 @@ unf2fs_main (const char *input,
   gfsck.sbi.fsck = &gfsck;
   sbi = &gfsck.sbi;
 
-  BEGIN_LIBF2FS_CALL();
+  BEGIN_QUIET();
     ret = f2fs_do_mount (sbi);
-  END_LIBF2FS_CALL();
+  END_QUIET();
   if (ret)
   {
     err("can't mount image\n");
@@ -163,10 +159,10 @@ unf2fs_main (const char *input,
 
   do_unfs (sbi, out_path);
 
-  BEGIN_LIBF2FS_CALL();
-    f2fs_do_umount (sbi);
+  f2fs_do_umount (sbi);
+  BEGIN_QUIET();
     ret = f2fs_finalize_device ();
-  END_LIBF2FS_CALL();
+  END_QUIET();
   if (ret)
   {
 #ifndef NDEBUG
@@ -182,7 +178,7 @@ out_err:
     free (sbi->ckpt);
   if (sbi->raw_super)
     free (sbi->raw_super);
-  BEGIN_LIBF2FS_CALL();
+  BEGIN_QUIET();
     f2fs_release_sparse_resource ();
-  END_LIBF2FS_CALL();
+  END_QUIET();
 }
