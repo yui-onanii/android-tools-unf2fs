@@ -12,7 +12,7 @@
 }
 
 static void
-handle_entry (nid_t ent_ino)
+handle_entry (const char *name, nid_t ent_ino)
 {
 }
 

@@ -4,7 +4,8 @@
 #include "fsck.h"
 #include "node.h"
 
-typedef void (*f2fs_ldir_cb)(nid_t ent_ino);
+typedef void (*f2fs_ldir_cb)(const char *name,
+                             nid_t ent_ino);
 
 void
 f2fs_listdir_ (struct f2fs_sb_info *sbi,
