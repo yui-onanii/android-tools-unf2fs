@@ -1,7 +1,6 @@
 // modified from f2fs-tools/fsck/dir.c
 
-#include "fsck.h"
-#include "node.h"
+#include "f2fs_private.h"
 
 static /* struct f2fs_dir_entry * */ void find_target_dentry( /* const u8 *name,
 		unsigned int len, f2fs_hash_t namehash, */ int *max_slots,
