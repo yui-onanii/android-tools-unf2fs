@@ -21,8 +21,30 @@ handle_entry (const char *name,
               __u8 file_type,
               nid_t ent_ino)
 {
+  struct node_info ent_ni;
+  struct f2fs_node *ent_node;
+
   if (is_dot_dotdot ((void *)name, name_len))
     return;
+
+  if (file_type == F2FS_FT_DIR)
+  {
+    ent_node = malloc (F2FS_BLKSIZE);
+    if (!ent_node)
+      abort ();
+
+    get_node_info (gsbi, ent_ino, &ent_ni);
+    if (dev_read_block (ent_node, ent_ni.blk_addr) < 0)
+    {
+      err("can't read inode %u\n", ent_ino);
+      goto skip;
+    }
+
+    f2fs_listdir_ (gsbi, ent_node, &handle_entry);
+
+skip:
+    free (ent_node);
+  }
 }
 
 static inline void
