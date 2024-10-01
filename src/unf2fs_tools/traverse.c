@@ -13,6 +13,13 @@
     abort ();                                     \
 }
 
+static inline void
+do_traverse (struct f2fs_sb_info *sbi,
+             struct f2fs_node *root,
+             const char *out_path)
+{
+}
+
 static inline struct timespec
 interval (struct timespec start,
           struct timespec end)
@@ -41,13 +48,6 @@ elapsed (struct timespec start,
             "%" PRIu64 ".%09" PRIu64 "s",
             diff.tv_sec, diff.tv_nsec);
   return buff;
-}
-
-static inline void
-do_traverse (struct f2fs_sb_info *sbi,
-             struct f2fs_node *root,
-             const char *out_path)
-{
 }
 
 void
