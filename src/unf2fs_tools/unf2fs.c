@@ -5,8 +5,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include <f2fs_fs.h>
-
 #include "fsck.h"
 
 #define BEGIN_LIBF2FS_CALL()    \

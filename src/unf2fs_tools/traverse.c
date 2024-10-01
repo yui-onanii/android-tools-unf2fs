@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <f2fs_fs.h>
-
 #include "f2fs.h"
 
 #define measure(t)                                \
