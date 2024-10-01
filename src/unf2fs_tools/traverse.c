@@ -11,6 +11,8 @@
     abort ();                                     \
 }
 
+static struct f2fs_sb_info *gsbi;
+
 static void
 handle_entry (const char *name,
               __u16 name_len,
@@ -26,7 +28,8 @@ do_traverse (struct f2fs_sb_info *sbi,
              struct f2fs_node *root,
              const char *out_path)
 {
-  f2fs_listdir_ (sbi, root, &handle_entry);
+  gsbi = sbi;
+  f2fs_listdir_ (gsbi, root, &handle_entry);
 }
 
 static inline struct timespec
