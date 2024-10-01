@@ -1,30 +1,11 @@
 string(TIMESTAMP BUILD_DATE "%y%m%d")
 
-set(libf2fs_extra_src_files
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/lib/libf2fs_io.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/quotaio.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/quotaio_v2.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/quotaio_tree.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/mkquota.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/dict.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/node.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/dir.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/xattr.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/segment.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/fsck.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/dump.c
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/mount.c)
-
 add_executable(unf2fs
-	${libf2fs_extra_src_files}
-	libf2fs_private/dir.c
 	unf2fs_tools/traverse.c
 	unf2fs_tools/unf2fs.c
 	unf2fs_tools/suggest.c
 	unf2fs_tools/main.c)
 target_compile_definitions(unf2fs PRIVATE
 	-DBUILD_DATE="${BUILD_DATE}")
-target_include_directories(unf2fs PRIVATE
-	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck)
 target_link_libraries(unf2fs PRIVATE
-	libf2fs libsparse ZLIB::ZLIB)
+	libf2fs_private)

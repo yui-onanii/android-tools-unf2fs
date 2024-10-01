@@ -1,0 +1,26 @@
+set(libf2fs_extra_src_files
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/lib/libf2fs_io.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/quotaio.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/quotaio_v2.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/quotaio_tree.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/mkquota.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/dict.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/node.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/dir.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/xattr.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/segment.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/fsck.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/dump.c
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/mount.c)
+
+add_library(libf2fs_extras
+	${libf2fs_extra_src_files})
+target_include_directories(libf2fs_extras PUBLIC
+	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck)
+target_link_libraries(libf2fs_extras PUBLIC
+	libf2fs libsparse ZLIB::ZLIB)
+
+add_library(libf2fs_private
+	libf2fs_private/dir.c)
+target_link_libraries(libf2fs_private PUBLIC
+	libf2fs_extras)
