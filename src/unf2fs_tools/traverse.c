@@ -13,7 +13,7 @@
 
 static void
 handle_entry (const char *name,
-              __le16 name_len,
+              __u16 name_len,
               nid_t ent_ino)
 {
 }

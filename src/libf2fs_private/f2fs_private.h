@@ -5,7 +5,7 @@
 #include "node.h"
 
 typedef void (*f2fs_ldir_cb)(const char *name,
-                             __le16 name_len,
+                             __u16 name_len,
                              nid_t ent_ino);
 
 void
