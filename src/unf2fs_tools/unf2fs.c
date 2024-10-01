@@ -51,9 +51,9 @@ set_stdout (int enabled)
 }
 
 void
-do_traverse (struct f2fs_sb_info *sbi,
-             struct f2fs_node *root,
-             const char *out_path);
+traverse_main (struct f2fs_sb_info *sbi,
+               struct f2fs_node *root,
+               const char *out_path);
 
 static inline void
 do_unfs (struct f2fs_sb_info *sbi,
@@ -77,7 +77,7 @@ do_unfs (struct f2fs_sb_info *sbi,
     goto out;
   }
 
-  do_traverse (sbi, root, out_path);
+  traverse_main (sbi, root, out_path);
 
 out:
   free (root);

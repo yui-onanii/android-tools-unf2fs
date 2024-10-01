@@ -43,16 +43,25 @@ elapsed (struct timespec start,
   return buff;
 }
 
-void
+static inline void
 do_traverse (struct f2fs_sb_info *sbi,
              struct f2fs_node *root,
              const char *out_path)
+{
+}
+
+void
+traverse_main (struct f2fs_sb_info *sbi,
+               struct f2fs_node *root,
+               const char *out_path)
 {
   struct timespec start;
   struct timespec end;
 
   measure(start);
   printf ("scan all files...\n");
+
+  do_traverse (sbi, root, out_path);
 
   measure(end);
   printf ("Done. %s\n", elapsed (start, end));
