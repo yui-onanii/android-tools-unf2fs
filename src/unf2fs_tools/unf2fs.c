@@ -62,7 +62,6 @@ do_unfs (struct f2fs_sb_info *sbi,
          const char *out_path)
 {
   struct node_info ni;
-  int ret;
   struct f2fs_node *root;
 
   root = malloc (F2FS_BLKSIZE);
@@ -70,8 +69,7 @@ do_unfs (struct f2fs_sb_info *sbi,
     abort ();
 
   get_node_info (sbi, F2FS_ROOT_INO(sbi), &ni);
-  ret = dev_read_block (root, ni.blk_addr);
-  if (ret < 0)
+  if (dev_read_block (root, ni.blk_addr) < 0)
   {
     err("can't read root node\n");
     goto out;
