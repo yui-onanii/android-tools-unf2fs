@@ -11,6 +11,8 @@
     abort ();                                     \
 }
 
+#define err(s, ...)   printf ("Error: " s, ##__VA_ARGS__)
+
 static struct f2fs_sb_info *gsbi;
 
 static void
