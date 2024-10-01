@@ -121,7 +121,7 @@ static /* int */ void f2fs_find_entry(struct f2fs_sb_info *sbi,
 }
 
 /* og behavior: return ino if file exists, otherwise return 0 */
-/* nid_t */ void f2fs_lookup(struct f2fs_sb_info *sbi, struct f2fs_node *dir,
+/* nid_t */ void /* f2fs_lookup */ f2fs_listdir(struct f2fs_sb_info *sbi, struct f2fs_node *dir,
 				u8 *name, int len)
 {
 	//int err;
