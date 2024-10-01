@@ -1,3 +1,7 @@
+/*
+ * mimic f2fsUnpack's CLI
+ */
+
 #include <alloca.h>
 #include <stddef.h>
 #include <stdio.h>

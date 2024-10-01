@@ -1,3 +1,5 @@
+// mostly kanged from f2fs-tools/fsck/main.c
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
