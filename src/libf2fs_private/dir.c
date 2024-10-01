@@ -27,6 +27,7 @@ static /* struct f2fs_dir_entry * */ void find_target_dentry(f2fs_ldir_cb cb, /*
 		}*/
                 cb((void *)d->filename[bit_pos],
                    le16_to_cpu(de->name_len),
+                   de->file_type,
                    le32_to_cpu(de->ino));
 
 		if (max_slots && max_len > *max_slots)

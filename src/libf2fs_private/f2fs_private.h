@@ -6,6 +6,7 @@
 
 typedef void (*f2fs_ldir_cb)(const char *name,
                              __u16 name_len,
+                             __u8 file_type,
                              nid_t ent_ino);
 
 void
