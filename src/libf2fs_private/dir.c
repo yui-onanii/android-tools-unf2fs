@@ -2,7 +2,7 @@
 
 #include "f2fs_private.h"
 
-static /* struct f2fs_dir_entry * */ void find_target_dentry(f2fs_ldir_cb cb, /* const u8 *name,
+static /* struct f2fs_dir_entry * */ inline void find_target_dentry(f2fs_ldir_cb cb, /* const u8 *name,
 		unsigned int len, f2fs_hash_t namehash, */ int *max_slots,
 		struct f2fs_dentry_ptr *d)
 {
@@ -42,7 +42,7 @@ static /* struct f2fs_dir_entry * */ void find_target_dentry(f2fs_ldir_cb cb, /*
 	//return de;
 }
 
-static /* struct f2fs_dir_entry * */ void find_in_block(void *block,
+static /* struct f2fs_dir_entry * */ inline void find_in_block(void *block,
 		//const u8 *name, int len, f2fs_hash_t namehash,
 		f2fs_ldir_cb cb,
 		int *max_slots)
@@ -53,7 +53,7 @@ static /* struct f2fs_dir_entry * */ void find_in_block(void *block,
 	/* return */ find_target_dentry(cb, /* name, len, namehash, */ max_slots, &d);
 }
 
-static /* int */ void find_in_level(struct f2fs_sb_info *sbi, struct f2fs_node *dir,
+static /* int */ inline void find_in_level(struct f2fs_sb_info *sbi, struct f2fs_node *dir,
 		unsigned int level /* , struct dentry *de */ , f2fs_ldir_cb cb )
 {
 	unsigned int nbucket, nblock;
@@ -110,7 +110,7 @@ static /* int */ void find_in_level(struct f2fs_sb_info *sbi, struct f2fs_node *
 	//return ret;
 }
 
-static /* int */ void f2fs_find_entry(struct f2fs_sb_info *sbi,
+static /* int */ inline void f2fs_find_entry(struct f2fs_sb_info *sbi,
 				struct f2fs_node *dir /* , struct dentry *de */ , f2fs_ldir_cb cb )
 {
 	unsigned int max_depth;
