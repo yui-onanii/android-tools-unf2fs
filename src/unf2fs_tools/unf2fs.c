@@ -45,6 +45,8 @@ set_stdout (int enabled)
       || dup2 (nulfd, STDOUT_FILENO) < 0)
     abort ();
   close (nulfd);
+#else
+  (void)enabled;
 #endif
 }
 
