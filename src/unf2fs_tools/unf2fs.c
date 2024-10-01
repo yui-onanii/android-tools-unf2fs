@@ -63,7 +63,7 @@ do_unfs (struct f2fs_sb_info *sbi,
   int ret;
   struct f2fs_node *root;
 
-  root = malloc (sizeof (struct f2fs_node));
+  root = malloc (F2FS_BLKSIZE);
   if (!root)
     abort ();
 
