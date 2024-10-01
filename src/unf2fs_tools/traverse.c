@@ -17,6 +17,8 @@ handle_entry (const char *name,
               __u8 file_type,
               nid_t ent_ino)
 {
+  if (is_dot_dotdot ((void *)name, name_len))
+    return;
 }
 
 static inline void
