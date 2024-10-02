@@ -20,7 +20,7 @@
 
 #define err(s, ...)   printf ("Error: " s, ##__VA_ARGS__)
 
-struct f2fs_fsck gfsck;
+static struct f2fs_fsck gfsck;
 
 INIT_FEATURE_TABLE;
 
