@@ -22,13 +22,11 @@ static char path_buf[8192] = {};
 static char *path_end;
 
 int
-extract_one_file (const char *name,
-                  const char *path,
+extract_one_file (const char *path,
                   struct f2fs_node *file_node);
 
 int
-extract_enter_dir (const char *name,
-                   const char *path,
+extract_enter_dir (const char *path,
                    struct f2fs_node *dir);
 
 void
@@ -40,7 +38,6 @@ handle_entry (const char *name,
               __u8 file_type,
               nid_t ent_ino)
 {
-  char name_[PATH_MAX];
   struct f2fs_node *ent_node;
   char *old_end;
 
@@ -50,13 +47,8 @@ handle_entry (const char *name,
   if (is_dot_dotdot ((void *)name, name_len))
     return;
 
-  // make a NUL-terminated name for our use
-  if (name_len > sizeof (name_) - 1)
-    name_len = sizeof (name_) - 1;
-  memcpy (name_, name, name_len);
-  name_[name_len] = '\0';
-
-  strcpy (path_end, name_);
+  memcpy (path_end, name, name_len);
+  path_end[name_len] = '\0';
 
   if (!(ent_node = f2fs_read_node_ (gsbi, ent_ino)))
   {
@@ -67,7 +59,7 @@ handle_entry (const char *name,
 
   if (file_type == F2FS_FT_DIR)
   {
-    if (extract_enter_dir (name_, path_buf, ent_node) < 0)
+    if (extract_enter_dir (path_buf, ent_node) < 0)
       goto out;
 
     // enter dir
@@ -82,7 +74,7 @@ handle_entry (const char *name,
     path_end = old_end;
   }
   else
-    extract_one_file (name_, path_buf, ent_node);
+    extract_one_file (path_buf, ent_node);
 
 out:
   free (ent_node);
@@ -100,25 +92,23 @@ do_traverse (struct f2fs_sb_info *sbi,
   f2fs_listdir_ (gsbi, root, &handle_entry);
 }
 
-static inline struct timespec
-interval (struct timespec start,
-          struct timespec end)
-{
-  struct timespec diff;
-
-  if (end.tv_nsec < start.tv_nsec  /* need borrow */)
-  {
-    end.tv_sec--;
-    end.tv_nsec += 1e9;  // 1s
-  }
-  diff.tv_sec = end.tv_sec - start.tv_sec;
-  diff.tv_nsec = end.tv_nsec - start.tv_nsec;
-  return diff;
-}
+#define interval(start, end)                            \
+({                                                      \
+  struct timespec diff;                                 \
+                                                        \
+  if (end.tv_nsec < start.tv_nsec  /* need borrow */)   \
+  {                                                     \
+    end.tv_sec--;                                       \
+    end.tv_nsec += 1e9;  /* 1s */                       \
+  }                                                     \
+  diff.tv_sec = end.tv_sec - start.tv_sec;              \
+  diff.tv_nsec = end.tv_nsec - start.tv_nsec;           \
+                                                        \
+  diff;                                                 \
+})
 
 static inline const char *
-elapsed (struct timespec start,
-         struct timespec end)
+elapsed (struct timespec start, struct timespec end)
 {
   struct timespec diff;
   static char buff[20];
@@ -134,8 +124,7 @@ void
 traverse_main (struct f2fs_sb_info *sbi,
                struct f2fs_node *root)
 {
-  struct timespec start;
-  struct timespec end;
+  struct timespec start, end;
 
   measure(start);
   printf ("scan all files...\n");

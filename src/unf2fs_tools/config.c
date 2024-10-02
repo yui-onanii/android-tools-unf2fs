@@ -9,6 +9,8 @@
 
 #define err(s, ...)   printf ("Error: " s, ##__VA_ARGS__)
 
+static const char *g_part_name;
+
 static FILE *fscfg_fp = NULL;
 static FILE *fsctx_fp = NULL;
 
@@ -20,18 +22,20 @@ config_setup_ (const char *part_name,
   char fscfg_name[PATH_MAX];
   char fsctx_name[PATH_MAX];
 
+  g_part_name = part_name;
+
   mkdir ("config", 0755);
   if ((ret = chdir ("config")) < 0)
   {
     err("Cannot open directory %s/%s\n",
-        out_path, part_name);
+        out_path, g_part_name);
     return ret;
   }
 
   snprintf (fscfg_name, sizeof (fscfg_name),
-            "%s_fs_config", part_name);
+            "%s_fs_config", g_part_name);
   snprintf (fsctx_name, sizeof (fsctx_name),
-            "%s_fs_contexts", part_name);
+            "%s_fs_contexts", g_part_name);
 
   fscfg_fp = fopen (fscfg_name, "w");
   if (!fscfg_fp)
@@ -56,12 +60,11 @@ config_setup_ (const char *part_name,
 }
 
 void
-fscfg_append (const char *part_name,
-              const char *path,
+fscfg_append (const char *path,
               struct f2fs_node *node)
 {
   fprintf (fscfg_fp, "%s%s %u %u %#o\n",
-           part_name, path,
+           g_part_name, path,
            le32_to_cpu(node->i.i_uid),
            le32_to_cpu(node->i.i_gid),
            le16_to_cpu(node->i.i_mode) & 07777);

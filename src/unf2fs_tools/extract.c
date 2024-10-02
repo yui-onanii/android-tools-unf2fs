@@ -15,7 +15,7 @@ int
 config_setup_ (const char *part_name,
                const char *out_path);
 
-static char g_buf[PATH_MAX];
+static char g_buf[8192];
 static char *g_part_name;
 
 int
@@ -51,17 +51,30 @@ extract_setup (const char *input,
   return ret;
 }
 
+static const char *
+get_basename (const char *path)
+{
+  const char *pos;
+
+  pos = strrchr (path, '/');
+  if (pos)
+    return pos + 1;
+
+  return path;
+}
+
 void
-fscfg_append (const char *part_name,
-              const char *path,
+fscfg_append (const char *path,
               struct f2fs_node *node);
 
 int
-extract_one_file (const char *name,
-                  const char *path,
+extract_one_file (const char *path,
                   struct f2fs_node *file_node)
 {
+  const char *name;
   int fd;
+
+  name = get_basename (path);
 
   if ((fd = open (name,
                   O_WRONLY | O_CREAT | O_TRUNC,
@@ -73,23 +86,25 @@ extract_one_file (const char *name,
 
   close (fd);
 
-  fscfg_append (g_part_name, path, file_node);
+  fscfg_append (path, file_node);
 
   return 0;
 }
 
 int
-extract_enter_dir (const char *name,
-                   const char *path,
+extract_enter_dir (const char *path,
                    struct f2fs_node *dir)
 {
+  const char *name;
   int ret;
+
+  name = get_basename (path);
 
   mkdir (name, 0755);
   if ((ret = chdir (name)) < 0)
     err("Cannot open directory %s\n", path);
 
-  fscfg_append (g_part_name, path, dir);
+  fscfg_append (path, dir);
 
   return ret;
 }
