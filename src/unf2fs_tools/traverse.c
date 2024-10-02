@@ -20,6 +20,17 @@ static struct f2fs_sb_info *gsbi;
 static char path_buf[PATH_MAX] = {};
 static char *path_end;
 
+int
+extract_one_file (const char *name,
+                  const char *path);
+
+int
+extract_enter_dir (const char *name,
+                   const char *path);
+
+void
+extract_leave_dir (void);
+
 static void
 handle_entry (const char *name,
               __u16 name_len,
@@ -45,6 +56,15 @@ handle_entry (const char *name,
 
   if (file_type == F2FS_FT_DIR)
   {
+    // enter dir
+    old_end = path_end;
+    path_end += snprintf (old_end,
+                          sizeof (path_buf) - (old_end - path_buf),
+                          "%s/", name_);
+
+    if (extract_enter_dir (name_, path_buf) < 0)
+      goto leave;
+
     ent_node = malloc (F2FS_BLKSIZE);
     if (!ent_node)
       abort ();
@@ -57,22 +77,17 @@ handle_entry (const char *name,
       goto skip;
     }
 
-    // enter dir
-    old_end = path_end;
-    path_end += snprintf (old_end,
-                          sizeof (path_buf) - (old_end - path_buf),
-                          "%s/", name_);
-
-
-
     f2fs_listdir_ (gsbi, ent_node, &handle_entry);
-
-    // leave dir
-    path_end = old_end;
-    *old_end = '\0';
 
 skip:
     free (ent_node);
+
+    extract_leave_dir ();
+
+leave:
+    // leave dir
+    path_end = old_end;
+    *old_end = '\0';
   }
   else
   {
@@ -80,7 +95,7 @@ skip:
     strncpy (path_end, name_,
              sizeof (path_buf) - (path_end - path_buf));
 
-
+    extract_one_file (name_, path_buf);
 
     *path_end = '\0';
   }

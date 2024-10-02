@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,4 +46,42 @@ extract_setup (const char *input,
 out:
   free (input_);
   return ret;
+}
+
+int
+extract_one_file (const char *name,
+                  const char *path)
+{
+  int fd;
+
+  if ((fd = open (name,
+                  O_WRONLY | O_CREAT | O_TRUNC,
+                  0644)) < 0)
+  {
+    err("Cannot open file %s\n", path);
+    return fd;
+  }
+
+  close (fd);
+  return 0;
+}
+
+int
+extract_enter_dir (const char *name,
+                   const char *path)
+{
+  int ret;
+
+  mkdir (name, 0755);
+  if ((ret = chdir (name)) < 0)
+    err("Cannot open directory %s\n", path);
+
+  return ret;
+}
+
+void
+extract_leave_dir (void)
+{
+  if (chdir ("..") < 0)
+    abort ();
 }
