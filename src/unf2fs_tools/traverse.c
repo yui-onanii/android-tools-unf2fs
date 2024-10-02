@@ -45,6 +45,7 @@ handle_entry (const char *name,
     get_node_info (gsbi, ent_ino, &ent_ni);
     if (dev_read_block (ent_node, ent_ni.blk_addr) < 0)
     {
+      // should this ever happen?
       err("can't read inode %u\n", ent_ino);
       goto skip;
     }
