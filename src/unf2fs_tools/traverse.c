@@ -17,6 +17,7 @@
 
 static struct f2fs_sb_info *gsbi;
 
+// Ok, now tell me how u still overflow this
 static char path_buf[8192] = {};
 static char *path_end;
 
