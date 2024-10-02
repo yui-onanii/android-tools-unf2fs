@@ -38,7 +38,6 @@ handle_entry (const char *name,
               nid_t ent_ino)
 {
   char name_[PATH_MAX];
-  struct node_info ent_ni;
   struct f2fs_node *ent_node;
   char *old_end;
 
@@ -65,12 +64,7 @@ handle_entry (const char *name,
     if (extract_enter_dir (name_, path_buf) < 0)
       goto leave;
 
-    ent_node = malloc (F2FS_BLKSIZE);
-    if (!ent_node)
-      abort ();
-
-    get_node_info (gsbi, ent_ino, &ent_ni);
-    if (dev_read_block (ent_node, ent_ni.blk_addr) < 0)
+    if (!(ent_node = f2fs_read_node_ (gsbi, ent_ino)))
     {
       // should this ever happen?
       err("can't read inode %u\n", ent_ino);
@@ -79,9 +73,9 @@ handle_entry (const char *name,
 
     f2fs_listdir_ (gsbi, ent_node, &handle_entry);
 
-skip:
     free (ent_node);
 
+skip:
     extract_leave_dir ();
 
 leave:

@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "fsck.h"
+#include "f2fs_private.h"
 
 #define BEGIN_QUIET()   \
 {                       \
@@ -59,23 +59,17 @@ traverse_main (struct f2fs_sb_info *sbi,
 static inline void
 do_unfs (struct f2fs_sb_info *sbi)
 {
-  struct node_info ni;
   struct f2fs_node *root;
 
-  root = malloc (F2FS_BLKSIZE);
-  if (!root)
-    abort ();
-
-  get_node_info (sbi, F2FS_ROOT_INO(sbi), &ni);
-  if (dev_read_block (root, ni.blk_addr) < 0)
+  if (!(root = f2fs_read_node_ (sbi,
+                                F2FS_ROOT_INO(sbi))))
   {
     err("can't read root node\n");
-    goto out;
+    return;
   }
 
   traverse_main (sbi, root);
 
-out:
   free (root);
 }
 
