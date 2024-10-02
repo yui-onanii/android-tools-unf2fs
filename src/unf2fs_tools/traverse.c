@@ -80,8 +80,7 @@ skip:
 
 static inline void
 do_traverse (struct f2fs_sb_info *sbi,
-             struct f2fs_node *root,
-             const char *out_path)
+             struct f2fs_node *root)
 {
   gsbi = sbi;
   path_end = stpcpy (path_buf, "/");
@@ -120,8 +119,7 @@ elapsed (struct timespec start,
 
 void
 traverse_main (struct f2fs_sb_info *sbi,
-               struct f2fs_node *root,
-               const char *out_path)
+               struct f2fs_node *root)
 {
   struct timespec start;
   struct timespec end;
@@ -129,7 +127,7 @@ traverse_main (struct f2fs_sb_info *sbi,
   measure(start);
   printf ("scan all files...\n");
 
-  do_traverse (sbi, root, out_path);
+  do_traverse (sbi, root);
 
   measure(end);
   printf ("Done. %s\n", elapsed (start, end));
