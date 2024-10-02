@@ -7,6 +7,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "f2fs_private.h"
+
 #define err(s, ...)   printf ("Error: " s, ##__VA_ARGS__)
 
 int
@@ -49,9 +51,15 @@ extract_setup (const char *input,
   return ret;
 }
 
+void
+fscfg_append (const char *part_name,
+              const char *path,
+              struct f2fs_node *node);
+
 int
 extract_one_file (const char *name,
-                  const char *path)
+                  const char *path,
+                  struct f2fs_node *file_node)
 {
   int fd;
 
@@ -64,18 +72,24 @@ extract_one_file (const char *name,
   }
 
   close (fd);
+
+  fscfg_append (g_part_name, path, file_node);
+
   return 0;
 }
 
 int
 extract_enter_dir (const char *name,
-                   const char *path)
+                   const char *path,
+                   struct f2fs_node *dir)
 {
   int ret;
 
   mkdir (name, 0755);
   if ((ret = chdir (name)) < 0)
     err("Cannot open directory %s\n", path);
+
+  fscfg_append (g_part_name, path, dir);
 
   return ret;
 }

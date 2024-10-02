@@ -22,11 +22,13 @@ static char *path_end;
 
 int
 extract_one_file (const char *name,
-                  const char *path);
+                  const char *path,
+                  struct f2fs_node *file_node);
 
 int
 extract_enter_dir (const char *name,
-                   const char *path);
+                   const char *path,
+                   struct f2fs_node *dir);
 
 void
 extract_leave_dir (void);
@@ -69,7 +71,7 @@ handle_entry (const char *name,
                           sizeof (path_buf) - (old_end - path_buf),
                           "%s/", name_);
 
-    if (extract_enter_dir (name_, path_buf) < 0)
+    if (extract_enter_dir (name_, path_buf, ent_node) < 0)
       goto leave;
 
     f2fs_listdir_ (gsbi, ent_node, &handle_entry);
@@ -87,7 +89,7 @@ leave:
     strncpy (path_end, name_,
              sizeof (path_buf) - (path_end - path_buf));
 
-    extract_one_file (name_, path_buf);
+    extract_one_file (name_, path_buf, ent_node);
 
     *path_end = '\0';
   }

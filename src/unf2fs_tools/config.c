@@ -5,6 +5,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "f2fs_private.h"
+
 #define err(s, ...)   printf ("Error: " s, ##__VA_ARGS__)
 
 static FILE *fscfg_fp = NULL;
@@ -51,6 +53,18 @@ config_setup_ (const char *part_name,
     abort ();
 
   return ret;
+}
+
+void
+fscfg_append (const char *part_name,
+              const char *path,
+              struct f2fs_node *node)
+{
+  fprintf (fscfg_fp, "%s%s %u %u %#o\n",
+           part_name, path,
+           le32_to_cpu(node->i.i_uid),
+           le32_to_cpu(node->i.i_gid),
+           le16_to_cpu(node->i.i_mode) & 07777);
 }
 
 __attribute__((destructor)) static void
