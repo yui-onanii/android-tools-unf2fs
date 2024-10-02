@@ -49,6 +49,7 @@ handle_entry (const char *name,
       goto skip;
     }
 
+    // enter dir
     old_end = path_end;
     path_end += snprintf (old_end,
                           sizeof (path_buf) - (old_end - path_buf),
@@ -56,6 +57,7 @@ handle_entry (const char *name,
 
     f2fs_listdir_ (gsbi, ent_node, &handle_entry);
 
+    // leave dir
     path_end = old_end;
     *old_end = '\0';
 
@@ -64,7 +66,8 @@ skip:
   }
   else
   {
-    stpncpy (path_end, name,
+    // dont touch path_end
+    strncpy (path_end, name,
              sizeof (path_buf) - (path_end - path_buf));
 
 
