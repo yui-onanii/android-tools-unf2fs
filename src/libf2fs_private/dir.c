@@ -1,4 +1,5 @@
 // modified from f2fs-tools/fsck/dir.c
+// also linux/fs/f2fs/dir.c, mainly f2fs_readdir
 
 #include "f2fs_private.h"
 
@@ -53,10 +54,10 @@ static /* struct f2fs_dir_entry * */ inline void find_in_block(void *block,
 	/* return */ find_target_dentry(cb, /* name, len, namehash, */ max_slots, &d);
 }
 
-static /* int */ inline void find_in_level(struct f2fs_sb_info *sbi, struct f2fs_node *dir,
-		unsigned int level /* , struct dentry *de */ , f2fs_ldir_cb cb )
+static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info *sbi, struct f2fs_node *dir,
+		/* unsigned int level, struct dentry *de, */ f2fs_ldir_cb cb )
 {
-	unsigned int nbucket, nblock;
+	//unsigned int nbucket, nblock;
 	unsigned int bidx, end_block;
 	//struct f2fs_dir_entry *dentry = NULL;
 	struct dnode_of_data dn;
@@ -64,17 +65,17 @@ static /* int */ inline void find_in_level(struct f2fs_sb_info *sbi, struct f2fs
 	int max_slots = 214;
 	nid_t ino = le32_to_cpu(F2FS_NODE_FOOTER(dir)->ino);
 	//f2fs_hash_t namehash;
-	unsigned int dir_level = dir->i.i_dir_level;
+	//unsigned int dir_level = dir->i.i_dir_level;
 	int ret = 0;
 
 	/*namehash = f2fs_dentry_hash(get_encoding(sbi), IS_CASEFOLDED(&dir->i),
 					de->name, de->len);*/
 
-	nbucket = dir_buckets(level, dir_level);
-	nblock = bucket_blocks(level);
+	/*nbucket = dir_buckets(level, dir_level);
+	nblock = bucket_blocks(level);*/
 
-	bidx = dir_block_index(level, dir_level, /* le32_to_cpu(namehash) % nbucket */ 0);
-	end_block = bidx + /* nblock */ nbucket * nblock;
+	bidx = /* dir_block_index(level, dir_level, le32_to_cpu(namehash) % nbucket) */ 0;
+	end_block = /* bidx + nblock */ (le32_to_cpu(dir->i.i_size) + F2FS_BLKSIZE - 1) / F2FS_BLKSIZE;
 
 	dentry_blk = calloc(F2FS_BLKSIZE, 1);
 	ASSERT(dentry_blk);
@@ -113,14 +114,14 @@ static /* int */ inline void find_in_level(struct f2fs_sb_info *sbi, struct f2fs
 static /* int */ inline void f2fs_find_entry(struct f2fs_sb_info *sbi,
 				struct f2fs_node *dir /* , struct dentry *de */ , f2fs_ldir_cb cb )
 {
-	unsigned int max_depth;
+	/*unsigned int max_depth;
 	unsigned int level;
 
 	max_depth = le32_to_cpu(dir->i.i_current_depth);
-	for (level = 0; level < max_depth; level ++) {
-		/* if ( */ find_in_level(sbi, dir, level /*, de */ , cb ) // )
+	for (level = 0; level < max_depth; level ++) {*/
+		/* if (find_in_level */ find_in_dir(sbi, dir /*, level , de */ , cb ) // )
 			/* return 1 */ ;
-	}
+	//}
 	//return 0;
 }
 
