@@ -1,4 +1,5 @@
 // mostly kanged from f2fs-tools/fsck/main.c
+// dont ask me why its so cumbersome to setup stuffs
 
 #include <fcntl.h>
 #include <stdio.h>
