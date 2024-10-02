@@ -22,7 +22,8 @@ static char path_buf[8192] = {};
 static char *path_end;
 
 int
-extract_one_file (const char *path,
+extract_one_file (struct f2fs_sb_info *sbi,
+                  const char *path,
                   struct f2fs_node *file_node);
 
 int
@@ -74,7 +75,7 @@ handle_entry (const char *name,
     path_end = old_end;
   }
   else
-    extract_one_file (path_buf, ent_node);
+    extract_one_file (gsbi, path_buf, ent_node);
 
 out:
   free (ent_node);

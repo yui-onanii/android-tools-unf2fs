@@ -23,3 +23,11 @@ f2fs_read_node_ (struct f2fs_sb_info *sbi,
 
   return node;
 }
+
+int
+f2fs_sendfile_ (struct f2fs_sb_info *sbi,
+                struct f2fs_node *file_node,
+                int out_fd)
+{
+  return -1;
+}

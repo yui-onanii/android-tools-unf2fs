@@ -20,6 +20,11 @@ struct f2fs_node *
 f2fs_read_node_ (struct f2fs_sb_info *sbi,
                  nid_t tgt_ino);
 
+int
+f2fs_sendfile_ (struct f2fs_sb_info *sbi,
+                struct f2fs_node *file_node,
+                int out_fd);
+
 void
 f2fs_listdir_ (struct f2fs_sb_info *sbi,
                struct f2fs_node *dir,

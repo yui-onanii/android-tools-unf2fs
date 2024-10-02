@@ -68,7 +68,8 @@ fscfg_append (const char *path,
               struct f2fs_node *node);
 
 int
-extract_one_file (const char *path,
+extract_one_file (struct f2fs_sb_info *sbi,
+                  const char *path,
                   struct f2fs_node *file_node)
 {
   const char *name;
@@ -84,9 +85,17 @@ extract_one_file (const char *path,
     return fd;
   }
 
-  close (fd);
+  if (f2fs_sendfile_ (sbi, file_node, fd) < 0)
+  {
+    err("failed to dump %s\n", path);
+    unlink (name);
+    goto out;
+  }
 
   fscfg_append (path, file_node);
+
+out:
+  close (fd);
 
   return 0;
 }
