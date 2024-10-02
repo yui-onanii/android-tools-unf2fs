@@ -53,6 +53,14 @@ handle_entry (const char *name,
   memcpy (name_, name, name_len);
   name_[name_len] = '\0';
 
+  if (!(ent_node = f2fs_read_node_ (gsbi, ent_ino)))
+  {
+    // should this ever happen?
+    err("can't read inode %u (%s/%s)\n",
+        ent_ino, path_buf, name_);
+    return;
+  }
+
   if (file_type == F2FS_FT_DIR)
   {
     // enter dir
@@ -64,18 +72,8 @@ handle_entry (const char *name,
     if (extract_enter_dir (name_, path_buf) < 0)
       goto leave;
 
-    if (!(ent_node = f2fs_read_node_ (gsbi, ent_ino)))
-    {
-      // should this ever happen?
-      err("can't read inode %u\n", ent_ino);
-      goto skip;
-    }
-
     f2fs_listdir_ (gsbi, ent_node, &handle_entry);
 
-    free (ent_node);
-
-skip:
     extract_leave_dir ();
 
 leave:
@@ -93,6 +91,8 @@ leave:
 
     *path_end = '\0';
   }
+
+  free (ent_node);
 }
 
 static inline void
