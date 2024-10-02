@@ -26,6 +26,7 @@ handle_entry (const char *name,
               __u8 file_type,
               nid_t ent_ino)
 {
+  char name_[PATH_MAX];
   struct node_info ent_ni;
   struct f2fs_node *ent_node;
   char *old_end;
@@ -35,6 +36,12 @@ handle_entry (const char *name,
 
   if (is_dot_dotdot ((void *)name, name_len))
     return;
+
+  // make a NUL-terminated name for our use
+  if (name_len > sizeof (name_) - 1)
+    name_len = sizeof (name_) - 1;
+  memcpy (name_, name, name_len);
+  name_[name_len] = '\0';
 
   if (file_type == F2FS_FT_DIR)
   {
@@ -54,7 +61,7 @@ handle_entry (const char *name,
     old_end = path_end;
     path_end += snprintf (old_end,
                           sizeof (path_buf) - (old_end - path_buf),
-                          "%s/", name);
+                          "%s/", name_);
 
 
 
@@ -70,7 +77,7 @@ skip:
   else
   {
     // dont touch path_end
-    strncpy (path_end, name,
+    strncpy (path_end, name_,
              sizeof (path_buf) - (path_end - path_buf));
 
 
