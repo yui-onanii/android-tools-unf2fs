@@ -17,7 +17,7 @@
 
 static struct f2fs_sb_info *gsbi;
 
-static char path_buf[PATH_MAX] = {};
+static char path_buf[8192] = {};
 static char *path_end;
 
 int
@@ -55,45 +55,39 @@ handle_entry (const char *name,
   memcpy (name_, name, name_len);
   name_[name_len] = '\0';
 
+  strcpy (path_end, name_);
+
   if (!(ent_node = f2fs_read_node_ (gsbi, ent_ino)))
   {
     // should this ever happen?
-    err("can't read inode %u (%s/%s)\n",
-        ent_ino, path_buf, name_);
-    return;
+    err("can't read inode %u (%s)\n", ent_ino, path_buf);
+    goto quit;
   }
 
   if (file_type == F2FS_FT_DIR)
   {
+    if (extract_enter_dir (name_, path_buf, ent_node) < 0)
+      goto out;
+
     // enter dir
     old_end = path_end;
-    path_end += snprintf (old_end,
-                          sizeof (path_buf) - (old_end - path_buf),
-                          "%s/", name_);
-
-    if (extract_enter_dir (name_, path_buf, ent_node) < 0)
-      goto leave;
-
+    path_end += name_len;
+    path_end = stpcpy (path_end, "/");
     f2fs_listdir_ (gsbi, ent_node, &handle_entry);
 
     extract_leave_dir ();
 
-leave:
     // leave dir
     path_end = old_end;
   }
   else
-  {
-    // dont touch path_end
-    strncpy (path_end, name_,
-             sizeof (path_buf) - (path_end - path_buf));
-
     extract_one_file (name_, path_buf, ent_node);
-  }
 
-  *path_end = '\0';
-
+out:
   free (ent_node);
+
+quit:
+  *path_end = '\0';
 }
 
 static inline void
