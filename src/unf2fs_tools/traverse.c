@@ -1,6 +1,8 @@
 #include <inttypes.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "f2fs_private.h"
@@ -15,6 +17,9 @@
 
 static struct f2fs_sb_info *gsbi;
 
+static char path_buf[PATH_MAX] = {};
+static char *path_end;
+
 static void
 handle_entry (const char *name,
               __u16 name_len,
@@ -23,6 +28,7 @@ handle_entry (const char *name,
 {
   struct node_info ent_ni;
   struct f2fs_node *ent_node;
+  char *old_end;
 
   if (!name_len)
     return;
@@ -43,10 +49,27 @@ handle_entry (const char *name,
       goto skip;
     }
 
+    old_end = path_end;
+    path_end += snprintf (old_end,
+                          sizeof (path_buf) - (old_end - path_buf),
+                          "%s/", name);
+
     f2fs_listdir_ (gsbi, ent_node, &handle_entry);
+
+    path_end = old_end;
+    *old_end = '\0';
 
 skip:
     free (ent_node);
+  }
+  else
+  {
+    stpncpy (path_end, name,
+             sizeof (path_buf) - (path_end - path_buf));
+
+
+
+    *path_end = '\0';
   }
 }
 
@@ -56,6 +79,7 @@ do_traverse (struct f2fs_sb_info *sbi,
              const char *out_path)
 {
   gsbi = sbi;
+  path_end = stpcpy (path_buf, "/");
   f2fs_listdir_ (gsbi, root, &handle_entry);
 }
 
