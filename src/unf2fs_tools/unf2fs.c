@@ -80,7 +80,7 @@ assert_image (const char *path)
   int fd;
   struct stat fs;
   __le32 buff;
-  __le32 magic = 0;
+  __u32 magic = 0;
   int res = -1;
 
   if ((fd = open (path, O_RDWR)) < 0
