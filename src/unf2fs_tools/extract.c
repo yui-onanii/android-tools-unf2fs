@@ -1,5 +1,6 @@
 #include <fcntl.h>
 #include <libgen.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,12 +13,14 @@ int
 config_setup_ (const char *part_name,
                const char *out_path);
 
+static char g_buf[PATH_MAX];
+static char *g_part_name;
+
 int
 extract_setup (const char *input,
                const char *out_path)
 {
   char *input_;
-  char *part_name;
   char *dot_pos;
   int ret;
 
@@ -29,22 +32,20 @@ extract_setup (const char *input,
   }
 
   // remove dir components and extensions
-  input_ = strdup (input);
-  part_name = basename (input_);
-  if ((dot_pos = strchr (part_name, '.')))
+  input_ = strncpy (g_buf, input, sizeof (g_buf));
+  g_part_name = basename (input_);
+  if ((dot_pos = strchr (g_part_name, '.')))
     *dot_pos = '\0';
 
-  if ((ret = config_setup_ (part_name,
+  if ((ret = config_setup_ (g_part_name,
                             out_path)) < 0)
-    goto out;
+    return ret;
 
-  mkdir (part_name, 0755);
-  if ((ret = chdir (part_name)) < 0)
+  mkdir (g_part_name, 0755);
+  if ((ret = chdir (g_part_name)) < 0)
     err("Cannot open directory %s/%s\n",
-        out_path, part_name);
+        out_path, g_part_name);
 
-out:
-  free (input_);
   return ret;
 }
 
