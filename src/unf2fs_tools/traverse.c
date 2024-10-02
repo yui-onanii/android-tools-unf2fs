@@ -81,7 +81,6 @@ handle_entry (const char *name,
 leave:
     // leave dir
     path_end = old_end;
-    *old_end = '\0';
   }
   else
   {
@@ -90,9 +89,9 @@ leave:
              sizeof (path_buf) - (path_end - path_buf));
 
     extract_one_file (name_, path_buf, ent_node);
-
-    *path_end = '\0';
   }
+
+  *path_end = '\0';
 
   free (ent_node);
 }
