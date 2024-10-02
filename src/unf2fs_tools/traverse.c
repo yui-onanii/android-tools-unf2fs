@@ -24,6 +24,9 @@ handle_entry (const char *name,
   struct node_info ent_ni;
   struct f2fs_node *ent_node;
 
+  if (!name_len)
+    return;
+
   if (is_dot_dotdot ((void *)name, name_len))
     return;
 
