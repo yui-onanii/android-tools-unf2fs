@@ -55,6 +55,8 @@ handle_entry (const char *name,
                           sizeof (path_buf) - (old_end - path_buf),
                           "%s/", name);
 
+
+
     f2fs_listdir_ (gsbi, ent_node, &handle_entry);
 
     // leave dir
