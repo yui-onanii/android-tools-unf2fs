@@ -4,15 +4,15 @@
 #include "f2fs_private.h"
 
 static /* struct f2fs_dir_entry * */ inline void find_target_dentry(f2fs_ldir_cb cb, /* const u8 *name,
-		unsigned int len, f2fs_hash_t namehash, */ int *max_slots,
+		unsigned int len, f2fs_hash_t namehash, int *max_slots, */
 		struct f2fs_dentry_ptr *d)
 {
 	struct f2fs_dir_entry *de;
 	unsigned long bit_pos = 0;
 	int max_len = 0;
 
-	if (max_slots)
-		*max_slots = 0;
+	/*if (max_slots)
+		*max_slots = 0;*/
 	while (bit_pos < (unsigned long)d->max) {
 		if (!test_bit_le(bit_pos, d->bitmap)) {
 			bit_pos++;
@@ -31,27 +31,27 @@ static /* struct f2fs_dir_entry * */ inline void find_target_dentry(f2fs_ldir_cb
                    de->file_type,
                    le32_to_cpu(de->ino));
 
-		if (max_slots && max_len > *max_slots)
-			*max_slots = max_len;
+		/*if (max_slots && max_len > *max_slots)
+			*max_slots = max_len;*/
 		max_len = 0;
 		bit_pos += GET_DENTRY_SLOTS(le16_to_cpu(de->name_len));
 	}
 	//de = NULL;
 //found:
-	if (max_slots && max_len > *max_slots)
-		*max_slots = max_len;
+	/*if (max_slots && max_len > *max_slots)
+		*max_slots = max_len;*/
 	//return de;
 }
 
 static /* struct f2fs_dir_entry * */ inline void find_in_block(void *block,
 		//const u8 *name, int len, f2fs_hash_t namehash,
-		f2fs_ldir_cb cb,
-		int *max_slots)
+		f2fs_ldir_cb cb
+		/* int *max_slots */ )
 {
 	struct f2fs_dentry_ptr d;
 
 	make_dentry_ptr(&d, NULL, block, 1);
-	/* return */ find_target_dentry(cb, /* name, len, namehash, */ max_slots, &d);
+	/* return */ find_target_dentry(cb, /* name, len, namehash, max_slots, */ &d);
 }
 
 static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info *sbi, struct f2fs_node *dir,
@@ -62,7 +62,7 @@ static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info
 	//struct f2fs_dir_entry *dentry = NULL;
 	struct dnode_of_data dn;
 	void *dentry_blk;
-	int max_slots = 214;
+	//int max_slots = 214;
 	nid_t ino = le32_to_cpu(F2FS_NODE_FOOTER(dir)->ino);
 	//f2fs_hash_t namehash;
 	//unsigned int dir_level = dir->i.i_dir_level;
@@ -95,8 +95,8 @@ static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info
 		ret = dev_read_block(dentry_blk, dn.data_blkaddr);
 		ASSERT(ret >= 0);
 
-		/* dentry = */ find_in_block(dentry_blk, cb, /* de->name, de->len,
-						namehash, */ &max_slots);
+		/* dentry = */ find_in_block(dentry_blk, cb /*, de->name, de->len,
+						namehash, &max_slots */ );
 		/*if (dentry) {
 			ret = 1;
 			de->ino = le32_to_cpu(dentry->ino);
