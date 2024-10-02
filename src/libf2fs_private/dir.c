@@ -75,7 +75,7 @@ static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info
 	nblock = bucket_blocks(level);*/
 
 	bidx = /* dir_block_index(level, dir_level, le32_to_cpu(namehash) % nbucket) */ 0;
-	end_block = /* bidx + nblock */ (le32_to_cpu(dir->i.i_size) + F2FS_BLKSIZE - 1) / F2FS_BLKSIZE;
+	end_block = /* bidx + nblock */ dir_blocks(dir);
 
 	dentry_blk = calloc(F2FS_BLKSIZE, 1);
 	ASSERT(dentry_blk);
