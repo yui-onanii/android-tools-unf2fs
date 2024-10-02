@@ -112,6 +112,10 @@ out:
   return res;
 }
 
+int
+extract_setup (const char *input,
+               const char *out_path);
+
 void
 unf2fs_main (const char *input,
              const char *out_path)
@@ -157,8 +161,11 @@ unf2fs_main (const char *input,
     goto out_err;
   }
 
+  if (extract_setup (input, out_path) < 0)
+    goto out;
   do_unfs (sbi);
 
+out:
   f2fs_do_umount (sbi);
   BEGIN_QUIET();
     ret = f2fs_finalize_device ();

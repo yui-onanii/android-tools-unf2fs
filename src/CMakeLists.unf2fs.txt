@@ -1,6 +1,8 @@
 string(TIMESTAMP BUILD_DATE "%y%m%d")
 
 add_executable(unf2fs
+	unf2fs_tools/config.c
+	unf2fs_tools/extract.c
 	unf2fs_tools/traverse.c
 	unf2fs_tools/unf2fs.c
 	unf2fs_tools/suggest.c
