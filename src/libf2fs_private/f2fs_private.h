@@ -9,6 +9,12 @@ typedef void (*f2fs_ldir_cb)(const char *name,
                              __u8 file_type,
                              nid_t ent_ino);
 
+static inline int
+f2fs_has_inline_dentry (struct f2fs_node *dir)
+{
+  return !!(dir->i.i_inline & F2FS_INLINE_DENTRY);
+}
+
 static inline unsigned int
 dir_blocks (struct f2fs_node *dir)
 {

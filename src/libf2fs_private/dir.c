@@ -54,6 +54,8 @@ static /* struct f2fs_dir_entry * */ inline void find_in_block(void *block,
 	/* return */ find_target_dentry(cb, /* name, len, namehash, max_slots, */ &d);
 }
 
+#include "inline.c"
+
 static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info *sbi, struct f2fs_node *dir,
 		/* unsigned int level, struct dentry *de, */ f2fs_ldir_cb cb )
 {
@@ -67,6 +69,16 @@ static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info
 	//f2fs_hash_t namehash;
 	//unsigned int dir_level = dir->i.i_dir_level;
 	int ret = 0;
+
+	if (f2fs_has_inline_dentry(dir))
+	{
+		/* dentry = */ f2fs_find_in_inline_dir(dir, /* de->name, de->len, namehash */ cb);
+		/*if (dentry) {
+			ret = 1;
+			de->ino = le32_to_cpu(dentry->ino);
+		}*/
+		return /* ret */ ;
+	}
 
 	/*namehash = f2fs_dentry_hash(get_encoding(sbi), IS_CASEFOLDED(&dir->i),
 					de->name, de->len);*/
