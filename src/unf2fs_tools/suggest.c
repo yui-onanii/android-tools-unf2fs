@@ -41,7 +41,7 @@ substitution_cost(char a, char b)
 }
 
 /* Calculate the Levenshtein distance between string1 and string2 */
-static ssize_t
+static inline ssize_t
 levenshtein_distance(const char *a, size_t a_size,
                      const char *b, size_t b_size,
                      size_t max_cost, size_t *buffer)

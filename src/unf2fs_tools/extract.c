@@ -51,7 +51,7 @@ extract_setup (const char *input,
   return ret;
 }
 
-static const char *
+static inline const char *
 get_basename (const char *path)
 {
   const char *pos;
