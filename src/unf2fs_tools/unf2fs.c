@@ -62,8 +62,8 @@ do_unfs (struct f2fs_sb_info *sbi)
 {
   struct f2fs_node *root;
 
-  if (!(root = f2fs_read_node_ (sbi,
-                                F2FS_ROOT_INO(sbi))))
+  if (!(root = f2fs_read_inode_ (sbi,
+                                 F2FS_ROOT_INO(sbi))))
   {
     err("can't read root node\n");
     return;

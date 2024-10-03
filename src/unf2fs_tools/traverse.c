@@ -51,7 +51,7 @@ handle_entry (const char *name,
   memcpy (path_end, name, name_len);
   path_end[name_len] = '\0';
 
-  if (!(ent_node = f2fs_read_node_ (gsbi, ent_ino)))
+  if (!(ent_node = f2fs_read_inode_ (gsbi, ent_ino)))
   {
     // should this ever happen?
     err("can't read inode %u (%s)\n", ent_ino, path_buf);

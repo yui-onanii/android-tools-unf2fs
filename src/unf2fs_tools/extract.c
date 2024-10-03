@@ -65,7 +65,7 @@ get_basename (const char *path)
 
 void
 fscfg_append (const char *path,
-              struct f2fs_node *node);
+              struct f2fs_node *ent_node);
 
 int
 extract_one_file (struct f2fs_sb_info *sbi,

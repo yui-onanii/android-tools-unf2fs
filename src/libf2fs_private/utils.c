@@ -4,24 +4,24 @@
 #include "f2fs_private.h"
 
 struct f2fs_node *
-f2fs_read_node_ (struct f2fs_sb_info *sbi,
-                 nid_t tgt_ino)
+f2fs_read_inode_ (struct f2fs_sb_info *sbi,
+                  nid_t tgt_ino)
 {
   struct node_info ni;
-  struct f2fs_node *node;
+  struct f2fs_node *res;
 
-  node = malloc (F2FS_BLKSIZE);
-  if (!node)
+  res = malloc (F2FS_BLKSIZE);
+  if (!res)
     abort ();
 
   get_node_info (sbi, tgt_ino, &ni);
-  if (dev_read_block (node, ni.blk_addr) < 0)
+  if (dev_read_block (res, ni.blk_addr) < 0)
   {
-    free (node);
+    free (res);
     return NULL;
   }
 
-  return node;
+  return res;
 }
 
 int

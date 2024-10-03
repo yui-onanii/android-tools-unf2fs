@@ -23,8 +23,8 @@ dir_blocks (struct f2fs_node *dir)
 }
 
 struct f2fs_node *
-f2fs_read_node_ (struct f2fs_sb_info *sbi,
-                 nid_t tgt_ino);
+f2fs_read_inode_ (struct f2fs_sb_info *sbi,
+                  nid_t tgt_ino);
 
 int
 f2fs_sendfile_ (struct f2fs_sb_info *sbi,
