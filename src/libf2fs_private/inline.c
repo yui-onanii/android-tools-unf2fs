@@ -15,7 +15,7 @@
 	inline_dentry = inline_data_addr(dir);
 
 	make_dentry_ptr(&d, dir, inline_dentry, 2);
-	/* de = */ find_target_dentry (cb, /* name, len, namehash, NULL, */ &d);
+	/* de = */ find_target_dentry(cb, /* name, len, namehash, NULL, */ &d);
 
 	/* return de; */
 }
