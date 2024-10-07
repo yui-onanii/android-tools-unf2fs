@@ -51,31 +51,17 @@ extract_setup (const char *input,
   return ret;
 }
 
-static inline const char *
-get_basename (const char *path)
-{
-  const char *pos;
-
-  pos = strrchr (path, '/');
-  if (pos)
-    return pos + 1;
-
-  return path;
-}
-
 void
 fscfg_append (const char *path,
               struct f2fs_node *ent_node);
 
 int
 extract_one_file (struct f2fs_sb_info *sbi,
+                  const char *name,
                   const char *path,
                   struct f2fs_node *file_node)
 {
-  const char *name;
   int fd;
-
-  name = get_basename (path);
 
   if ((fd = open (name,
                   O_WRONLY | O_CREAT | O_TRUNC,
@@ -101,13 +87,11 @@ out:
 }
 
 int
-extract_enter_dir (const char *path,
+extract_enter_dir (const char *name,
+                   const char *path,
                    struct f2fs_node *dir)
 {
-  const char *name;
   int ret;
-
-  name = get_basename (path);
 
   mkdir (name, 0755);
   if ((ret = chdir (name)) < 0)

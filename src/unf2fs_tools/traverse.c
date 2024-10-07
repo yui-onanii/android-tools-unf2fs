@@ -23,11 +23,13 @@ static char *path_end;
 
 int
 extract_one_file (struct f2fs_sb_info *sbi,
+                  const char *name,
                   const char *path,
                   struct f2fs_node *file_node);
 
 int
-extract_enter_dir (const char *path,
+extract_enter_dir (const char *name,
+                   const char *path,
                    struct f2fs_node *dir);
 
 void
@@ -60,7 +62,7 @@ handle_entry (const char *name,
 
   if (file_type == F2FS_FT_DIR)
   {
-    if (extract_enter_dir (path_buf, ent_node) < 0)
+    if (extract_enter_dir (path_end, path_buf, ent_node) < 0)
       goto out;
 
     // enter dir
@@ -75,7 +77,7 @@ handle_entry (const char *name,
     path_end = old_end;
   }
   else
-    extract_one_file (gsbi, path_buf, ent_node);
+    extract_one_file (gsbi, path_end, path_buf, ent_node);
 
 out:
   free (ent_node);
@@ -90,6 +92,7 @@ do_traverse (struct f2fs_sb_info *sbi,
 {
   gsbi = sbi;
   path_end = stpcpy (path_buf, "/");
+  extract_enter_dir (".", "/", root);
   f2fs_listdir_ (gsbi, root, &handle_entry);
 }
 
