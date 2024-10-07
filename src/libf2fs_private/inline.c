@@ -4,6 +4,7 @@
 
 #include "f2fs_private.h"
 
+#ifdef IN_LIBF2FS_LISTDIR
 /* struct f2fs_dir_entry * */ void f2fs_find_in_inline_dir(struct f2fs_node *dir,
 								/* const u8 *name, int len, f2fs_hash_t namehash */
 								f2fs_ldir_cb cb)
@@ -19,3 +20,4 @@
 
 	/* return de; */
 }
+#endif

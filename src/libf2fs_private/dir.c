@@ -54,6 +54,7 @@ static /* struct f2fs_dir_entry * */ inline void find_in_block(void *block,
 	/* return */ find_target_dentry(cb, /* name, len, namehash, max_slots, */ &d);
 }
 
+#define IN_LIBF2FS_LISTDIR
 #include "inline.c"
 
 static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info *sbi, struct f2fs_node *dir,
