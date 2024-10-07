@@ -1,7 +1,8 @@
 android-tools-unf2fs
 ====================
 
-WIP
+a free drop-in replacement for f2fsUnpack for rom tools.
+based on f2fs-tools; and android-tools for build system.
 
 
 
