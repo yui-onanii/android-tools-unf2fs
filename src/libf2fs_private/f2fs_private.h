@@ -1,8 +1,13 @@
+/*
+ * handy header for our use
+ */
+
 #ifndef LIBF2FS_PRIVATE_H
 #define LIBF2FS_PRIVATE_H
 
 #include <stdint.h>
 
+// private headers, since lots of things are not exported in f2fs_fs.h
 #include "fsck.h"
 #include "node.h"
 
@@ -23,9 +28,13 @@ f2fs_has_inline_data (struct f2fs_node *file_node)
   return !!(file_node->i.i_inline & F2FS_INLINE_DATA);
 }
 
+/*
+ * for directory, inode stored total size of dentry blocks
+ */
 static inline unsigned int
 dir_blocks (struct f2fs_node *dir)
 {
+  // fast round-up
   return ((unsigned long)(le32_to_cpu(dir->i.i_size) + F2FS_BLKSIZE - 1))
                                                      / F2FS_BLKSIZE;
 }

@@ -1,3 +1,7 @@
+/*
+ * for writing fsconfig and fscontexts
+ */
+
 #include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -76,6 +80,7 @@ fscfg_append (const char *path,
            le32_to_cpu(ent_node->i.i_gid),
            le16_to_cpu(ent_node->i.i_mode) & 07777);
 
+  // optional
   if (caps)
     fprintf (fscfg_fp, " capabilities=%#lx", caps);
 

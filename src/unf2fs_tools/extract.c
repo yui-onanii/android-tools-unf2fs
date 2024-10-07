@@ -1,3 +1,7 @@
+/*
+ * dump file/directory
+ */
+
 #include <fcntl.h>
 #include <libgen.h>
 #include <limits.h>
@@ -12,6 +16,7 @@
 
 #define err(s, ...)   printf ("Error: " s, ##__VA_ARGS__)
 
+// see config.c
 int
 config_setup_ (const char *part_name,
                const char *out_path);
@@ -52,6 +57,7 @@ extract_setup (const char *input,
   return ret;
 }
 
+// see config.c
 void
 fscfg_append (const char *path,
               struct f2fs_node *ent_node,

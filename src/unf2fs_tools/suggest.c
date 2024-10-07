@@ -1,4 +1,8 @@
 // https://github.com/python/cpython/blob/4a5e4aa/Python/suggestions.c
+//
+// changes:
+//   replaced uses of cpython types and macros
+//   tweaked for our use case
 
 #include <limits.h>
 #include <stddef.h>

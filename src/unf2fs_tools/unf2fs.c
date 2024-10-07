@@ -1,5 +1,9 @@
+/*
+ * sets up libf2fs
+ */
+
 // mostly kanged from f2fs-tools/fsck/main.c
-// dont ask me why its so cumbersome to setup stuffs
+// dont ask me why its so cumbersome ¯\_(ツ)_/¯
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -24,6 +28,9 @@ static struct f2fs_fsck gfsck;
 
 INIT_FEATURE_TABLE;
 
+/*
+ * suppress/restore stdout
+ */
 static inline void
 set_stdout (int enabled)
 {
@@ -53,6 +60,7 @@ set_stdout (int enabled)
 #endif
 }
 
+// see traverse.c
 void
 traverse_main (struct f2fs_sb_info *sbi,
                struct f2fs_node *root);
@@ -60,7 +68,7 @@ traverse_main (struct f2fs_sb_info *sbi,
 static inline void
 do_unfs (struct f2fs_sb_info *sbi)
 {
-  struct f2fs_node *root;
+  struct f2fs_node *root;  // the top dir in fs
 
   if (!(root = f2fs_read_inode_ (sbi,
                                  F2FS_ROOT_INO(sbi))))
@@ -74,6 +82,11 @@ do_unfs (struct f2fs_sb_info *sbi)
   free (root);
 }
 
+/*
+ * check if file too small to be a valid f2fs image
+ *
+ * verify file magic
+ */
 static inline int
 assert_image (const char *path)
 {
@@ -107,6 +120,7 @@ out:
   return res;
 }
 
+// see extract.c
 int
 extract_setup (const char *input,
                const char *out_path);
@@ -121,8 +135,8 @@ unf2fs_main (const char *input,
   if (assert_image (input) < 0)
     return;
 
-  f2fs_init_configuration ();
-  c.devices[0].path = strdup (input);
+  f2fs_init_configuration ();  // default
+  c.devices[0].path = strdup (input);  // image
   check_block_struct_sizes ();
 
   BEGIN_QUIET();
@@ -143,6 +157,7 @@ unf2fs_main (const char *input,
     return;
   }
 
+  // libf2fs magics
   memset (&gfsck, 0, sizeof (gfsck));
   gfsck.sbi.fsck = &gfsck;
   sbi = &gfsck.sbi;
@@ -176,6 +191,7 @@ out:
   return;
 
 out_err:
+  // libf2fs craps
   if (sbi->ckpt)
     free (sbi->ckpt);
   if (sbi->raw_super)

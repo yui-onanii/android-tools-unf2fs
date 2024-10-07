@@ -9,6 +9,7 @@
 #include <string.h>
 #include <getopt.h>
 
+// defined in CMakeLists.unf2fs.txt
 #ifndef BUILD_DATE
 # define BUILD_DATE     "yymmdd"
 #endif
@@ -56,10 +57,13 @@ assert_unexpected_args (size_t n, char *args[])
   size_t i;
 
   if (!n)
-    return;
+    return;  // nothing
 
   pr_usage_short ();
   err("Got unexpected extra arguments (%s", args[0]);
+
+  // print out the first 3, omit the rest
+
   for (i = 1; i < MIN(n, 3); i++)
     printf (" %s", args[i]);
 
@@ -90,7 +94,9 @@ assert_unexpected_arg (const char *opt)
     if (option->val != optopt)
       continue;
     if (option->has_arg != no_argument)
-      abort ();
+      abort ();  // other errors??
+
+    // strip the value and =
 
     pos = strchr (opt, '=');
     if (!pos)
@@ -106,6 +112,7 @@ assert_unexpected_arg (const char *opt)
   }
 }
 
+// see suggest.c
 const char *
 calc_suggestion(const char *dir[],
                 size_t dir_size,
@@ -119,12 +126,14 @@ abort_unk_long_opt (const char *opt)
   size_t i;
   const char *suggest;
 
+  // put them into a simple array for calc_suggestion
   for (n_opts = 0; long_opts[n_opts].name; n_opts++);
   names = alloca (n_opts * sizeof (const char *));
   for (i = 0; i < n_opts; i++)
     names[i] = long_opts[i].name;
 
-  suggest = calc_suggestion (names, n_opts, opt + 2);
+  suggest = calc_suggestion (names, n_opts,
+                             opt + 2  /* skip the -- */ );
   if (suggest)
   {
     die("no such option: \"%s\". "
@@ -136,6 +145,7 @@ abort_unk_long_opt (const char *opt)
   }
 }
 
+// see unf2fs.c
 void
 unf2fs_main (const char *input,
              const char *out_path);
@@ -148,8 +158,8 @@ main (int argc, char *argv[])
   char *out_path = ".";
 
   while ((opt = getopt_long (argc, argv,
-                             ":ho:", long_opts,
-                             NULL)) != EOF)
+                             ":ho:" /* use our err handling */ ,
+                             long_opts, NULL)) != EOF)
   {
     switch (opt)
     {

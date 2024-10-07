@@ -1,10 +1,19 @@
-// based on linux/fs/f2fs/inline.c
+/*
+ * helper routines for inline feature
+ *
+ * based on linux/fs/f2fs/inline.c
+ */
 
 //#include <stddef.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 #include "f2fs_private.h"
+
+/*
+ * for small file/directory, f2fs might inline dentry/file data in the inode block directly,
+ * so handle it.
+ */
 
 #ifdef IN_LIBF2FS_LISTDIR
 /* struct f2fs_dir_entry * */ void f2fs_find_in_inline_dir(struct f2fs_node *dir,

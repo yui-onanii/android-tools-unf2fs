@@ -1,3 +1,7 @@
+/*
+ * file path construction
+ */
+
 #include <inttypes.h>
 #include <limits.h>
 #include <stdint.h>
@@ -19,8 +23,10 @@
 static struct f2fs_sb_info *gsbi;
 
 // Ok, now tell me how u still overflow this
-static char path_buf[8192] = {};
-static char *path_end;
+static char path_buf[8192] = {};  // current file path
+static char *path_end;  // NUL byte or current file name
+
+// see extract.c
 
 int
 extract_one_file (struct f2fs_sb_info *sbi,
@@ -45,12 +51,14 @@ handle_entry (const char *name,
   struct f2fs_node *ent_node;
   char *old_end;
 
+  // sanity check
   if (!name_len)
     return;
 
   if (is_dot_dotdot ((void *)name, name_len))
-    return;
+    return;  // skip specials
 
+  // append file/dir name
   memcpy (path_end, name, name_len);
   path_end[name_len] = '\0';
 
@@ -70,6 +78,7 @@ handle_entry (const char *name,
     old_end = path_end;
     path_end += name_len;
     path_end = stpcpy (path_end, "/");
+    // XXX: let's just hope this wont overflow call stack
     f2fs_listdir_ (gsbi, ent_node, &handle_entry);
 
     extract_leave_dir ();
@@ -84,9 +93,11 @@ out:
   free (ent_node);
 
 quit:
+  // pop file/dir name
   *path_end = '\0';
 }
 
+// see config.c
 void
 fscfg_append (const char *path,
               struct f2fs_node *ent_node,
@@ -98,6 +109,7 @@ do_traverse (struct f2fs_sb_info *sbi,
 {
   uint64_t root_caps;
 
+  // mimic f2fsUnpack
   root_caps = f2fs_getcaps_ (root);
   fscfg_append ("/", root, root_caps, 1);
   extract_enter_dir (".", "/", root);

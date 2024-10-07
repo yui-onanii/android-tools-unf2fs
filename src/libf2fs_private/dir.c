@@ -1,8 +1,24 @@
+/*
+ * helper routines for walking files/directories
+ */
+
 // modified from f2fs-tools/fsck/dir.c
 // also linux/fs/f2fs/dir.c, mainly f2fs_readdir
+//
+// changes:
+//   removed name matching logics
+//   added callback
+//   optimized for dir/file enumeration
+//   removed other unused stuffs
+//   added inline dentry handling
+//
+// see: https://docs.kernel.org/filesystems/f2fs.html#directory-structure
 
 #include "f2fs_private.h"
 
+/*
+ * `bitmap' records which dentry contains valid data (i.e. is in use)
+ */
 static /* struct f2fs_dir_entry * */ inline void find_target_dentry(f2fs_ldir_cb cb, /* const u8 *name,
 		unsigned int len, f2fs_hash_t namehash, int *max_slots, */
 		struct f2fs_dentry_ptr *d)
@@ -54,9 +70,15 @@ static /* struct f2fs_dir_entry * */ inline void find_in_block(void *block,
 	/* return */ find_target_dentry(cb, /* name, len, namehash, max_slots, */ &d);
 }
 
+// for f2fs_find_in_inline_dir
 #define IN_LIBF2FS_LISTDIR
 #include "inline.c"
 
+/*
+ * this function used to narrow down the search to only the dentry blocks
+ * in the bucket that the entry falls into (determined from namehash),
+ * but we want to go over all the dentry blocks, thus the modifications.
+ */
 static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info *sbi, struct f2fs_node *dir,
 		/* unsigned int level, struct dentry *de, */ f2fs_ldir_cb cb )
 {
@@ -74,6 +96,8 @@ static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info
 	if (f2fs_has_inline_dentry(dir))
 	{
 		/* dentry = */ f2fs_find_in_inline_dir(dir, /* de->name, de->len, namehash */ cb);
+		// f2fs will de-inline when more dentries are added to directory
+		// so if inline dentries exist, thats all we need for this dir
 		/*if (dentry) {
 			ret = 1;
 			de->ino = le32_to_cpu(dentry->ino);
@@ -101,6 +125,7 @@ static /* int */ inline void /* find_in_level */ find_in_dir(struct f2fs_sb_info
 			free(dn.node_blk);
 
 		set_new_dnode(&dn, dir, NULL, ino);
+		// get_dnode_of_data already handle in/direct nodes
 		get_dnode_of_data(sbi, &dn, bidx, LOOKUP_NODE);
 		if (dn.data_blkaddr == NULL_ADDR)
 			continue;
