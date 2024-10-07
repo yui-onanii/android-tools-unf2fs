@@ -97,11 +97,13 @@ do_traverse (struct f2fs_sb_info *sbi,
              struct f2fs_node *root)
 {
   uint64_t root_caps;
-  gsbi = sbi;
-  path_end = stpcpy (path_buf, "/");
+
   root_caps = f2fs_getcaps_ (root);
   fscfg_append ("/", root, root_caps, 1);
   extract_enter_dir (".", "/", root);
+
+  gsbi = sbi;
+  path_end = stpcpy (path_buf, "/");
   f2fs_listdir_ (gsbi, root, &handle_entry);
 }
 
