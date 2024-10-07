@@ -56,4 +56,7 @@ f2fs_listdir_ (struct f2fs_sb_info *sbi,
 uint64_t
 f2fs_getcaps_ (struct f2fs_node *ent_node);
 
+const char *
+f2fs_getcon_ (struct f2fs_node *ent_node);
+
 #endif /* LIBF2FS_PRIVATE_H */

@@ -58,10 +58,16 @@ extract_setup (const char *input,
 }
 
 // see config.c
+
 void
 fscfg_append (const char *path,
               struct f2fs_node *ent_node,
               uint64_t caps, int root);
+
+void
+fsctx_append (const char *path,
+              const char *selabel,
+              int root);
 
 int
 extract_one_file (struct f2fs_sb_info *sbi,
@@ -71,6 +77,7 @@ extract_one_file (struct f2fs_sb_info *sbi,
 {
   int fd;
   uint64_t caps;
+  const char *selabel;
 
   if ((fd = open (name,
                   O_WRONLY | O_CREAT | O_TRUNC,
@@ -89,6 +96,8 @@ extract_one_file (struct f2fs_sb_info *sbi,
 
   caps = f2fs_getcaps_ (file_node);
   fscfg_append (path, file_node, caps, 0);
+  selabel = f2fs_getcon_ (file_node);
+  fsctx_append (path, selabel, 0);
 
 out:
   close (fd);
@@ -103,6 +112,7 @@ extract_enter_dir (const char *name,
 {
   int ret;
   uint64_t caps;
+  const char *selabel;
 
   mkdir (name, 0755);
   if ((ret = chdir (name)) < 0)
@@ -110,6 +120,8 @@ extract_enter_dir (const char *name,
 
   caps = f2fs_getcaps_ (dir);
   fscfg_append (path, dir, caps, 0);
+  selabel = f2fs_getcon_ (dir);
+  fsctx_append (path, selabel, 0);
 
   return ret;
 }

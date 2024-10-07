@@ -70,3 +70,9 @@ f2fs_getcaps_ (struct f2fs_node *ent_node)
 {
   return 0;  // TODO
 }
+
+const char *
+f2fs_getcon_ (struct f2fs_node *ent_node)
+{
+  return NULL;  // TODO: implement
+}

@@ -51,14 +51,13 @@ config_setup_ (const char *part_name,
     return -1;
   }
 
-  // FIXME
-  /*fsctx_fp = fopen(fsctx_name, "w");
+  fsctx_fp = fopen(fsctx_name, "w");
   if (!fsctx_fp)
   {
     err("Cannot open file %s/config/%s\n",
         out_path, fsctx_name);
     return -1;
-  }*/
+  }
 
   if (chdir ("..") < 0)
     abort ();
@@ -85,6 +84,40 @@ fscfg_append (const char *path,
     fprintf (fscfg_fp, " capabilities=%#lx", caps);
 
   fwrite ("\n", 1, 1, fscfg_fp);
+
+  if (root)
+    fscfg_append (path, ent_node, caps, 0);
+}
+
+// see regex.c
+const char *
+re_esc_str_ (const char *s);
+
+void
+fsctx_append (const char *path,
+              const char *selabel,
+              int root)
+{
+  if (!root)
+  {
+    path = re_esc_str_ (path);
+rerun_no_esc:
+    fprintf (fsctx_fp, "/%s", g_part_name);
+  }
+
+  fwrite (path, strlen (path), 1, fsctx_fp);
+
+  if (selabel)
+    fprintf (fsctx_fp, " %s", selabel);
+
+  fwrite ("\n", 1, 1, fsctx_fp);
+
+  if (root)
+  {
+    path = "(/.*)?";
+    root = 0;
+    goto rerun_no_esc;
+  }
 }
 
 __attribute__((destructor)) static void

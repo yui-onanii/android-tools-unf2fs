@@ -98,21 +98,29 @@ quit:
 }
 
 // see config.c
+
 void
 fscfg_append (const char *path,
               struct f2fs_node *ent_node,
               uint64_t caps, int root);
+
+void
+fsctx_append (const char *path,
+              const char *selabel,
+              int root);
 
 static inline void
 do_traverse (struct f2fs_sb_info *sbi,
              struct f2fs_node *root)
 {
   uint64_t root_caps;
+  const char *root_selabel;
 
   // mimic f2fsUnpack
   root_caps = f2fs_getcaps_ (root);
   fscfg_append ("/", root, root_caps, 1);
-  extract_enter_dir (".", "/", root);
+  root_selabel = f2fs_getcon_ (root);
+  fsctx_append ("/", root_selabel, 1);
 
   gsbi = sbi;
   path_end = stpcpy (path_buf, "/");
