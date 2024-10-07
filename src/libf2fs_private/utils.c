@@ -24,10 +24,30 @@ f2fs_read_inode_ (struct f2fs_sb_info *sbi,
   return res;
 }
 
+#include "inline.c"
+
 int
 f2fs_sendfile_ (struct f2fs_sb_info *sbi,
                 struct f2fs_node *file_node,
                 int out_fd)
 {
-  return -1;
+  int ret = -1;
+
+  if (f2fs_has_inline_data (file_node))
+  {
+    if ((ret = f2fs_do_read_inline_data (out_fd,
+                                         file_node)) < 0)
+      goto out;
+  }
+  else
+  {
+    goto out;  // TBD
+  }
+
+  if ((ret = ftruncate (out_fd,
+                        file_node->i.i_size)) < 0)
+    goto out;
+
+out:
+  return ret;
 }

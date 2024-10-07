@@ -15,6 +15,12 @@ f2fs_has_inline_dentry (struct f2fs_node *dir)
   return !!(dir->i.i_inline & F2FS_INLINE_DENTRY);
 }
 
+static inline int
+f2fs_has_inline_data (struct f2fs_node *file_node)
+{
+  return !!(file_node->i.i_inline & F2FS_INLINE_DATA);
+}
+
 static inline unsigned int
 dir_blocks (struct f2fs_node *dir)
 {
