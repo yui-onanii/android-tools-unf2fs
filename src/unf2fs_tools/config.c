@@ -45,13 +45,14 @@ config_setup_ (const char *part_name,
     return -1;
   }
 
-  fsctx_fp = fopen(fsctx_name, "w");
+  // FIXME
+  /*fsctx_fp = fopen(fsctx_name, "w");
   if (!fsctx_fp)
   {
     err("Cannot open file %s/config/%s\n",
         out_path, fsctx_name);
     return -1;
-  }
+  }*/
 
   if (chdir ("..") < 0)
     abort ();
