@@ -1,5 +1,6 @@
 #include <limits.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -63,13 +64,21 @@ config_setup_ (const char *part_name,
 void
 fscfg_append (const char *path,
               struct f2fs_node *ent_node,
-              int root)
+              uint64_t caps, int root)
 {
-  fprintf (fscfg_fp, "%s%s %u %u %#o\n",
-           root ? "" : g_part_name, path,
+  if (!root)
+    fwrite (g_part_name, strlen (g_part_name), 1, fscfg_fp);
+
+  fprintf (fscfg_fp, "%s %u %u %#o",
+           path,
            le32_to_cpu(ent_node->i.i_uid),
            le32_to_cpu(ent_node->i.i_gid),
            le16_to_cpu(ent_node->i.i_mode) & 07777);
+
+  if (caps)
+    fprintf (fscfg_fp, " capabilities=%#lx", caps);
+
+  fwrite ("\n", 1, 1, fscfg_fp);
 }
 
 __attribute__((destructor)) static void

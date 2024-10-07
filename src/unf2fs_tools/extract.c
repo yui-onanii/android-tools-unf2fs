@@ -1,6 +1,7 @@
 #include <fcntl.h>
 #include <libgen.h>
 #include <limits.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -54,7 +55,7 @@ extract_setup (const char *input,
 void
 fscfg_append (const char *path,
               struct f2fs_node *ent_node,
-              int root);
+              uint64_t caps, int root);
 
 int
 extract_one_file (struct f2fs_sb_info *sbi,
@@ -63,6 +64,7 @@ extract_one_file (struct f2fs_sb_info *sbi,
                   struct f2fs_node *file_node)
 {
   int fd;
+  uint64_t caps;
 
   if ((fd = open (name,
                   O_WRONLY | O_CREAT | O_TRUNC,
@@ -79,7 +81,8 @@ extract_one_file (struct f2fs_sb_info *sbi,
     goto out;
   }
 
-  fscfg_append (path, file_node, 0);
+  caps = f2fs_getcaps_ (file_node);
+  fscfg_append (path, file_node, caps, 0);
 
 out:
   close (fd);
@@ -93,12 +96,14 @@ extract_enter_dir (const char *name,
                    struct f2fs_node *dir)
 {
   int ret;
+  uint64_t caps;
 
   mkdir (name, 0755);
   if ((ret = chdir (name)) < 0)
     err("Cannot open directory %s\n", path);
 
-  fscfg_append (path, dir, 0);
+  caps = f2fs_getcaps_ (dir);
+  fscfg_append (path, dir, caps, 0);
 
   return ret;
 }

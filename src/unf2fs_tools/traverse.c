@@ -1,5 +1,6 @@
 #include <inttypes.h>
 #include <limits.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -89,15 +90,17 @@ quit:
 void
 fscfg_append (const char *path,
               struct f2fs_node *ent_node,
-              int root);
+              uint64_t caps, int root);
 
 static inline void
 do_traverse (struct f2fs_sb_info *sbi,
              struct f2fs_node *root)
 {
+  uint64_t root_caps;
   gsbi = sbi;
   path_end = stpcpy (path_buf, "/");
-  fscfg_append ("/", root, 1);
+  root_caps = f2fs_getcaps_ (root);
+  fscfg_append ("/", root, root_caps, 1);
   extract_enter_dir (".", "/", root);
   f2fs_listdir_ (gsbi, root, &handle_entry);
 }

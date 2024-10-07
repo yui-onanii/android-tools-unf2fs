@@ -51,3 +51,9 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
 out:
   return ret;
 }
+
+uint64_t
+f2fs_getcaps_ (struct f2fs_node *ent_node)
+{
+  return 0;  // TODO
+}
