@@ -42,3 +42,4 @@ Tested Targets
 
 (note: if u plan to build for Termux, import patches from:
  https://github.com/termux/termux-packages/tree/master/packages/android-tools
+ or use Glibc (recommended): https://github.com/termux-pacman/glibc-packages
