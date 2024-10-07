@@ -86,12 +86,18 @@ quit:
   *path_end = '\0';
 }
 
+void
+fscfg_append (const char *path,
+              struct f2fs_node *ent_node,
+              int root);
+
 static inline void
 do_traverse (struct f2fs_sb_info *sbi,
              struct f2fs_node *root)
 {
   gsbi = sbi;
   path_end = stpcpy (path_buf, "/");
+  fscfg_append ("/", root, 1);
   extract_enter_dir (".", "/", root);
   f2fs_listdir_ (gsbi, root, &handle_entry);
 }

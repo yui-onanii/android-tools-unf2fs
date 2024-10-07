@@ -61,10 +61,11 @@ config_setup_ (const char *part_name,
 
 void
 fscfg_append (const char *path,
-              struct f2fs_node *ent_node)
+              struct f2fs_node *ent_node,
+              int root)
 {
   fprintf (fscfg_fp, "%s%s %u %u %#o\n",
-           g_part_name, path,
+           root ? "" : g_part_name, path,
            le32_to_cpu(ent_node->i.i_uid),
            le32_to_cpu(ent_node->i.i_gid),
            le16_to_cpu(ent_node->i.i_mode) & 07777);

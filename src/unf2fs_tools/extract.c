@@ -53,7 +53,8 @@ extract_setup (const char *input,
 
 void
 fscfg_append (const char *path,
-              struct f2fs_node *ent_node);
+              struct f2fs_node *ent_node,
+              int root);
 
 int
 extract_one_file (struct f2fs_sb_info *sbi,
@@ -78,7 +79,7 @@ extract_one_file (struct f2fs_sb_info *sbi,
     goto out;
   }
 
-  fscfg_append (path, file_node);
+  fscfg_append (path, file_node, 0);
 
 out:
   close (fd);
@@ -97,7 +98,7 @@ extract_enter_dir (const char *name,
   if ((ret = chdir (name)) < 0)
     err("Cannot open directory %s\n", path);
 
-  fscfg_append (path, dir);
+  fscfg_append (path, dir, 0);
 
   return ret;
 }
