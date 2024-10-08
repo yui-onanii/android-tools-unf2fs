@@ -125,6 +125,7 @@ f2fs_getcaps_ (struct f2fs_sb_info *sbi,
   int err;
 
   inum = le32_to_cpu(F2FS_NODE_FOOTER(ent_node)->ino);
+  // security.capability: this key stores a vfs_cap_data struct
   err = f2fs_getxattr_ (sbi, inum,
                         F2FS_XATTR_INDEX_SECURITY,
                         XATTR_CAPS_SUFFIX,
@@ -150,6 +151,7 @@ f2fs_getcon_ (struct f2fs_sb_info *sbi,
 
   inum = le32_to_cpu(F2FS_NODE_FOOTER(ent_node)->ino);
   memset (buff, 0, sizeof (buff));
+  // security.selinux: this key stores the selabel string
   err = f2fs_getxattr_ (sbi, inum,
                         F2FS_XATTR_INDEX_SECURITY,
                         XATTR_SELINUX_SUFFIX, buff,
