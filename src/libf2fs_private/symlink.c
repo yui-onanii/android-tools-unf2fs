@@ -14,6 +14,7 @@ f2fs_readlink_ (struct f2fs_sb_info *sbi,
   char *data_blk;
   int ret;
 
+  // for symlinks, this is the length of destination path
   file_size = le64_to_cpu(link_file->i.i_size);
   if (f2fs_has_inline_data (link_file))
     memcpy (buff,
