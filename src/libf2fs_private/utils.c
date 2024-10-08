@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -49,17 +50,22 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
                 int out_fd)
 {
   int ret = -1;
+  struct stat fs;
   off_t off;
   __u64 size;
   void *ptr;
   __u32 inum;
 
+  if ((ret = fstat (out_fd, &fs)) < 0)
+    goto out;
+
   if ((off = lseek (out_fd, 0, SEEK_CUR)) == (off_t)-1)
     goto out;
 
   size = le64_to_cpu(file_node->i.i_size);
-  if ((ret = ftruncate (out_fd,
-                        off + size)) < 0)
+  if (off + size > fs.st_size
+      && (ret = ftruncate (out_fd,
+                           off + size)) < 0)
     goto out;
 
   if (f2fs_has_inline_data (file_node))
