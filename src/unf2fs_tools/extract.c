@@ -80,7 +80,7 @@ extract_one_file (struct f2fs_sb_info *sbi,
   const char *selabel;
 
   if ((fd = open (name,
-                  O_WRONLY | O_CREAT | O_TRUNC,
+                  O_RDWR | O_CREAT | O_TRUNC,
                   0644)) < 0)
   {
     err("Cannot open file %s\n", path);

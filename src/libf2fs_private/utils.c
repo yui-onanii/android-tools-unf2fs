@@ -87,6 +87,8 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
       goto out;
     }
 
+    madvise (ptr + off, size, MADV_SEQUENTIAL);
+
     inum = le32_to_cpu(F2FS_NODE_FOOTER(file_node)->ino);
     if (f2fs_read (sbi, inum, ptr + off, size, 0) != size)
     {
