@@ -10,6 +10,7 @@
 // private headers, since lots of things are not exported in f2fs_fs.h
 #include "fsck.h"
 #include "node.h"
+#include "xattr.h"
 
 typedef void (*f2fs_ldir_cb)(const char *name,
                              __u16 name_len,
