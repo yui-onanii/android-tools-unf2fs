@@ -79,6 +79,8 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
   }
   else
   {
+    // f2fs_read want a buffer instead of a fd
+
     ptr = mmap (NULL, off + size, PROT_WRITE,
                 MAP_SHARED, out_fd, 0);
     if (ptr == MAP_FAILED)
@@ -90,6 +92,7 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
     madvise (ptr + off, size, MADV_SEQUENTIAL);
 
     inum = le32_to_cpu(F2FS_NODE_FOOTER(file_node)->ino);
+    // f2fs_read is already buffered based on block size
     if (f2fs_read (sbi, inum, ptr + off, size, 0) != size)
     {
       ret = -1;
