@@ -11,6 +11,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "android_filesystem_capability.h"
+
 #include "f2fs_private.h"
 
 /*
@@ -112,10 +114,27 @@ out:
 }
 
 uint64_t
+f2fs_parse_caps_ (struct vfs_cap_data *cap_data);
+
+uint64_t
 f2fs_getcaps_ (struct f2fs_sb_info *sbi,
                struct f2fs_node *ent_node)
 {
-  return 0;  // TODO
+  __u32 inum;
+  struct vfs_cap_data cap_data;
+  int err;
+
+  inum = le32_to_cpu(F2FS_NODE_FOOTER(ent_node)->ino);
+  err = f2fs_getxattr_ (sbi, inum,
+                        F2FS_XATTR_INDEX_SECURITY,
+                        XATTR_CAPS_SUFFIX, &cap_data);
+  if (err == -ENODATA || err == -EUCLEAN)
+    return 0;
+
+  if (err < 0)
+    abort ();
+
+  return f2fs_parse_caps_ (&cap_data);
 }
 
 const char *
