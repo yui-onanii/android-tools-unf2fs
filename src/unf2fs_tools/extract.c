@@ -85,6 +85,7 @@ extract_one_file (struct f2fs_sb_info *sbi,
   if (LINUX_S_ISLNK(mode))
   {
     lnk_tgt = f2fs_readlink_ (sbi, file_node);
+    unlink (name);
     if (symlink (lnk_tgt, name) < 0)
     {
       err("failed to create symlink %s (to %s)\n",
