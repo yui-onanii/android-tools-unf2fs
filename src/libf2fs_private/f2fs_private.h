@@ -13,9 +13,13 @@
 #include "node.h"
 #include "xattr.h"
 
+#define LINUX_S_IFLNK       0120000
+
 #ifndef XATTR_CAPS_SUFFIX
 #define XATTR_CAPS_SUFFIX   "capability"
 #endif
+
+#define LINUX_S_ISLNK(m)	(((m) & LINUX_S_IFMT) == LINUX_S_IFLNK)
 
 typedef void (*f2fs_ldir_cb)(const char *name,
                              __u16 name_len,
@@ -48,6 +52,10 @@ dir_blocks (struct f2fs_node *dir)
 struct f2fs_node *
 f2fs_read_inode_ (struct f2fs_sb_info *sbi,
                   nid_t tgt_ino);
+
+const char *
+f2fs_readlink_ (struct f2fs_sb_info *sbi,
+                struct f2fs_node *link_file);
 
 int
 f2fs_sendfile_ (struct f2fs_sb_info *sbi,

@@ -75,9 +75,24 @@ extract_one_file (struct f2fs_sb_info *sbi,
                   const char *path,
                   struct f2fs_node *file_node)
 {
-  int fd;
+  int fd = -1;
   uint64_t caps;
   const char *selabel;
+  __u16 mode;
+  const char *lnk_tgt;
+
+  mode = le16_to_cpu(file_node->i.i_mode);
+  if (LINUX_S_ISLNK(mode))
+  {
+    lnk_tgt = f2fs_readlink_ (sbi, file_node);
+    if (symlink (lnk_tgt, name) < 0)
+    {
+      err("failed to create symlink %s (to %s)\n",
+          path, lnk_tgt);
+      return -1;
+    }
+    goto write_config;
+  }
 
   if ((fd = open (name,
                   O_RDWR | O_CREAT | O_TRUNC,
@@ -94,6 +109,7 @@ extract_one_file (struct f2fs_sb_info *sbi,
     goto out;
   }
 
+write_config:
   caps = f2fs_getcaps_ (sbi, file_node);
   fscfg_append (path, file_node, caps, 0);
   selabel = f2fs_getcon_ (sbi, file_node);

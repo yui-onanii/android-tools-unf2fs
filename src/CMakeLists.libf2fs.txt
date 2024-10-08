@@ -24,6 +24,7 @@ add_library(libf2fs_private
 	libf2fs_private/utils.c
 	libf2fs_private/xattr.c
 	libf2fs_private/caps.c
+	libf2fs_private/symlink.c
 	libf2fs_private/dir.c)
 target_include_directories(libf2fs_private PUBLIC
 	libf2fs_private)
