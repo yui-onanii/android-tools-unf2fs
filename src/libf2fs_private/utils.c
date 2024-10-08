@@ -4,6 +4,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -50,6 +51,8 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
   int ret = -1;
   off_t off;
   __u64 size;
+  void *ptr;
+  __u32 inum;
 
   if ((off = lseek (out_fd, 0, SEEK_CUR)) == (off_t)-1)
     goto out;
@@ -70,8 +73,25 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
   }
   else
   {
-    ret = -1;
-    goto out;  // TBD
+    ptr = mmap (NULL, off + size, PROT_WRITE,
+                MAP_SHARED, out_fd, 0);
+    if (ptr == MAP_FAILED)
+    {
+      ret = -1;
+      goto out;
+    }
+
+    inum = le32_to_cpu(F2FS_NODE_FOOTER(file_node)->ino);
+    if (f2fs_read (sbi, inum, ptr + off, size, 0) != size)
+    {
+      ret = -1;
+      goto unmap;
+    }
+
+    ret = 0;
+
+unmap:
+    munmap (ptr, off + size);
   }
 
 out:
