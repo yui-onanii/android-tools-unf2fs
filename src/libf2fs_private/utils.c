@@ -4,6 +4,8 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "f2fs_private.h"
 
@@ -45,10 +47,14 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
                 struct f2fs_node *file_node,
                 int out_fd)
 {
-  int ret;
+  int ret = -1;
+  off_t off;
+
+  if ((off = lseek (out_fd, 0, SEEK_CUR)) == (off_t)-1)
+    goto out;
 
   if ((ret = ftruncate (out_fd,
-                        file_node->i.i_size)) < 0)
+                        off + file_node->i.i_size)) < 0)
     goto out;
 
   if (f2fs_has_inline_data (file_node))
