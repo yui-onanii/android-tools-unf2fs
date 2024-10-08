@@ -30,7 +30,7 @@ static struct f2fs_xattr_entry *__find_xattr(void *base_addr,
 }
 
 int /* f2fs_setxattr */ f2fs_getxattr_(struct f2fs_sb_info *sbi, nid_t ino, int index, const char *name,
-		/* const */ void *value /* , size_t size, int flags */)
+		/* const */ void *value, size_t size /* , int flags */)
 {
 	struct f2fs_node *inode;
 	void *base_addr;
@@ -87,6 +87,13 @@ int /* f2fs_setxattr */ f2fs_getxattr_(struct f2fs_sb_info *sbi, nid_t ino, int 
 		error = -EEXIST;
 		goto exit;
 	}*/
+
+	// ADDED BY UNF2FS: check buffer overflow
+	if (le16_to_cpu(here->e_value_size) > size)
+	{
+		error = -ENOMEM;
+                goto exit;
+	}
 
 	/*last = here;
 	while (!IS_XATTR_LAST_ENTRY(last))

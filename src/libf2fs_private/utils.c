@@ -127,7 +127,8 @@ f2fs_getcaps_ (struct f2fs_sb_info *sbi,
   inum = le32_to_cpu(F2FS_NODE_FOOTER(ent_node)->ino);
   err = f2fs_getxattr_ (sbi, inum,
                         F2FS_XATTR_INDEX_SECURITY,
-                        XATTR_CAPS_SUFFIX, &cap_data);
+                        XATTR_CAPS_SUFFIX,
+                        &cap_data, sizeof (cap_data));
   if (err == -ENODATA || err == -EUCLEAN)
     return 0;
 
@@ -149,7 +150,8 @@ f2fs_getcon_ (struct f2fs_sb_info *sbi,
   memset (buff, 0, sizeof (buff));
   err = f2fs_getxattr_ (sbi, inum,
                         F2FS_XATTR_INDEX_SECURITY,
-                        XATTR_SELINUX_SUFFIX, buff);
+                        XATTR_SELINUX_SUFFIX, buff,
+                        sizeof (buff) - 1  /* NUL */ );
   if (err == -ENODATA || err == -EUCLEAN)
     return NULL;
 

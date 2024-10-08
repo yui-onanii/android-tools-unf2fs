@@ -5,6 +5,7 @@
 #ifndef LIBF2FS_PRIVATE_H
 #define LIBF2FS_PRIVATE_H
 
+#include <stddef.h>
 #include <stdint.h>
 
 // private headers, since lots of things are not exported in f2fs_fs.h
@@ -62,7 +63,8 @@ int
 f2fs_getxattr_ (struct f2fs_sb_info *sbi,
                 nid_t ino, int index,
                 const char *name,
-                void *buff);
+                void *buff,
+                size_t size);
 
 uint64_t
 f2fs_getcaps_ (struct f2fs_sb_info *sbi,
