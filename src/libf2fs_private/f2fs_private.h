@@ -5,6 +5,7 @@
 #ifndef LIBF2FS_PRIVATE_H
 #define LIBF2FS_PRIVATE_H
 
+#include <errno.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -12,6 +13,10 @@
 #include "fsck.h"
 #include "node.h"
 #include "xattr.h"
+
+#ifndef EUCLEAN
+#define EUCLEAN             114514
+#endif
 
 #define LINUX_S_IFLNK       0120000
 
