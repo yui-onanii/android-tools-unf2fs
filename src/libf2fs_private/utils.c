@@ -36,6 +36,10 @@ f2fs_read_inode_ (struct f2fs_sb_info *sbi,
 // for f2fs_do_read_inline_data
 #include "inline.c"
 
+/*
+ * one can also kang these from f2fs-tools/fsck/dump.c
+ * i didn't knew until i finished writing ;_;
+ */
 int
 f2fs_sendfile_ (struct f2fs_sb_info *sbi,
                 struct f2fs_node *file_node,

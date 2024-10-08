@@ -14,6 +14,11 @@
 //
 // see: https://docs.kernel.org/filesystems/f2fs.html#directory-structure
 
+/*
+ * one can also kang these from f2fs-tools/fsck/dump.c
+ * i didn't knew until i finished writing ;_;
+ */
+
 #include "f2fs_private.h"
 
 /*
