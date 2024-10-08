@@ -150,7 +150,7 @@ int /* f2fs_setxattr */ f2fs_getxattr_(struct f2fs_sb_info *sbi, nid_t ino, int 
 	//ASSERT(update_inode(sbi, inode, &ni.blk_addr) >= 0);
 
 	// ADDED BY UNF2FS: copy out xattr value
-	memcpy (value, pval, here->e_value_size);
+	memcpy(value, pval, here->e_value_size);
 exit:
 	free(inode);
 	free(base_addr);
