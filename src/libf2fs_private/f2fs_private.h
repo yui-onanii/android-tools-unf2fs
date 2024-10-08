@@ -12,7 +12,9 @@
 #include "node.h"
 #include "xattr.h"
 
+#ifndef XATTR_CAPS_SUFFIX
 #define XATTR_CAPS_SUFFIX   "capability"
+#endif
 
 typedef void (*f2fs_ldir_cb)(const char *name,
                              __u16 name_len,
