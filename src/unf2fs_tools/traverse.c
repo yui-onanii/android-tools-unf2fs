@@ -70,6 +70,8 @@ handle_entry (const char *name,
     goto quit;
   }
 
+  printf ("ex %s\n", path_buf);
+
   if (file_type == F2FS_FT_DIR)
   {
     if (extract_enter_dir (gsbi, path_end,
@@ -119,6 +121,7 @@ do_traverse (struct f2fs_sb_info *sbi,
   const char *root_selabel;
 
   // mimic f2fsUnpack
+  printf ("ex /\n");
   root_caps = f2fs_getcaps_ (sbi, root);
   fscfg_append ("/", root, root_caps, 1);
   root_selabel = f2fs_getcon_ (sbi, root);
