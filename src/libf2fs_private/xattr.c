@@ -2,6 +2,7 @@
 //
 // removed xattr setting logics
 // added code for dumping xattr value
+// tweaked a bit for our need
 
 #include "f2fs_private.h"
 
@@ -72,8 +73,8 @@ int /* f2fs_setxattr */ f2fs_getxattr_(struct f2fs_sb_info *sbi, nid_t ino, int 
 
 	here = __find_xattr(base_addr, last_base_addr, index, len, name);
 	if (!here) {
-		MSG(0, "Need to run fsck due to corrupted xattr.\n");
-		error = -EINVAL;
+		//MSG(0, "Need to run fsck due to corrupted xattr.\n");
+		error = /* -EINVAL */ -EUCLEAN;
 		goto exit;
 	}
 

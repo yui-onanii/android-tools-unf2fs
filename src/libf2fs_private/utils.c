@@ -130,7 +130,7 @@ f2fs_getcon_ (struct f2fs_sb_info *sbi,
   err = f2fs_getxattr_ (sbi, inum,
                         F2FS_XATTR_INDEX_SECURITY,
                         XATTR_SELINUX_SUFFIX, buff);
-  if (err == -ENODATA)
+  if (err == -ENODATA || err == -EUCLEAN)
     return NULL;
 
   if (err < 0)
