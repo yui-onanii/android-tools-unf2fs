@@ -35,7 +35,8 @@ extract_one_file (struct f2fs_sb_info *sbi,
                   struct f2fs_node *file_node);
 
 int
-extract_enter_dir (const char *name,
+extract_enter_dir (struct f2fs_sb_info *sbi,
+                   const char *name,
                    const char *path,
                    struct f2fs_node *dir);
 
@@ -71,7 +72,8 @@ handle_entry (const char *name,
 
   if (file_type == F2FS_FT_DIR)
   {
-    if (extract_enter_dir (path_end, path_buf, ent_node) < 0)
+    if (extract_enter_dir (gsbi, path_end,
+                           path_buf, ent_node) < 0)
       goto out;
 
     // enter dir
@@ -117,9 +119,9 @@ do_traverse (struct f2fs_sb_info *sbi,
   const char *root_selabel;
 
   // mimic f2fsUnpack
-  root_caps = f2fs_getcaps_ (root);
+  root_caps = f2fs_getcaps_ (sbi, root);
   fscfg_append ("/", root, root_caps, 1);
-  root_selabel = f2fs_getcon_ (root);
+  root_selabel = f2fs_getcon_ (sbi, root);
   fsctx_append ("/", root_selabel, 1);
 
   gsbi = sbi;

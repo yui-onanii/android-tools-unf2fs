@@ -4,6 +4,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -110,13 +111,30 @@ out:
 }
 
 uint64_t
-f2fs_getcaps_ (struct f2fs_node *ent_node)
+f2fs_getcaps_ (struct f2fs_sb_info *sbi,
+               struct f2fs_node *ent_node)
 {
   return 0;  // TODO
 }
 
 const char *
-f2fs_getcon_ (struct f2fs_node *ent_node)
+f2fs_getcon_ (struct f2fs_sb_info *sbi,
+              struct f2fs_node *ent_node)
 {
-  return NULL;  // TODO: implement
+  __u32 inum;
+  static char buff[8192];
+  int err;
+
+  inum = le32_to_cpu(F2FS_NODE_FOOTER(ent_node)->ino);
+  memset (buff, 0, sizeof (buff));
+  err = f2fs_getxattr_ (sbi, inum,
+                        F2FS_XATTR_INDEX_SECURITY,
+                        XATTR_SELINUX_SUFFIX, buff);
+  if (err == -ENODATA)
+    return NULL;
+
+  if (err < 0)
+    abort ();
+
+  return buff;
 }

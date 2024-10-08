@@ -94,9 +94,9 @@ extract_one_file (struct f2fs_sb_info *sbi,
     goto out;
   }
 
-  caps = f2fs_getcaps_ (file_node);
+  caps = f2fs_getcaps_ (sbi, file_node);
   fscfg_append (path, file_node, caps, 0);
-  selabel = f2fs_getcon_ (file_node);
+  selabel = f2fs_getcon_ (sbi, file_node);
   fsctx_append (path, selabel, 0);
 
 out:
@@ -106,7 +106,8 @@ out:
 }
 
 int
-extract_enter_dir (const char *name,
+extract_enter_dir (struct f2fs_sb_info *sbi,
+                   const char *name,
                    const char *path,
                    struct f2fs_node *dir)
 {
@@ -118,9 +119,9 @@ extract_enter_dir (const char *name,
   if ((ret = chdir (name)) < 0)
     err("Cannot open directory %s\n", path);
 
-  caps = f2fs_getcaps_ (dir);
+  caps = f2fs_getcaps_ (sbi, dir);
   fscfg_append (path, dir, caps, 0);
-  selabel = f2fs_getcon_ (dir);
+  selabel = f2fs_getcon_ (sbi, dir);
   fsctx_append (path, selabel, 0);
 
   return ret;
