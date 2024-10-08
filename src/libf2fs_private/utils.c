@@ -49,12 +49,14 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
 {
   int ret = -1;
   off_t off;
+  __u64 size;
 
   if ((off = lseek (out_fd, 0, SEEK_CUR)) == (off_t)-1)
     goto out;
 
+  size = le64_to_cpu(file_node->i.i_size);
   if ((ret = ftruncate (out_fd,
-                        off + file_node->i.i_size)) < 0)
+                        off + size)) < 0)
     goto out;
 
   if (f2fs_has_inline_data (file_node))
