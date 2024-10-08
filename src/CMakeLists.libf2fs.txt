@@ -13,14 +13,14 @@ set(libf2fs_extra_src_files
 	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/dump.c
 	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck/mount.c)
 
-add_library(libf2fs_extras
+add_library(libf2fs_extras STATIC
 	${libf2fs_extra_src_files})
 target_include_directories(libf2fs_extras PUBLIC
 	${CMAKE_SOURCE_DIR}/vendor/f2fs-tools/fsck)
 target_link_libraries(libf2fs_extras PUBLIC
 	libf2fs libsparse ZLIB::ZLIB)
 
-add_library(libf2fs_private
+add_library(libf2fs_private STATIC
 	libf2fs_private/utils.c
 	libf2fs_private/xattr.c
 	libf2fs_private/caps.c
