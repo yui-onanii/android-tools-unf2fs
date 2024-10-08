@@ -45,7 +45,11 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
                 struct f2fs_node *file_node,
                 int out_fd)
 {
-  int ret = -1;
+  int ret;
+
+  if ((ret = ftruncate (out_fd,
+                        file_node->i.i_size)) < 0)
+    goto out;
 
   if (f2fs_has_inline_data (file_node))
   {
@@ -58,12 +62,9 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
   }
   else
   {
+    ret = -1;
     goto out;  // TBD
   }
-
-  if ((ret = ftruncate (out_fd,
-                        file_node->i.i_size)) < 0)
-    goto out;
 
 out:
   return ret;

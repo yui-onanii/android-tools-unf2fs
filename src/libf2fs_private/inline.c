@@ -33,9 +33,13 @@
 }
 #endif
 
+#ifndef MIN
+# define MIN(a, b)    ((a < b) ? a : b)
+#endif
+
 static inline int f2fs_do_read_inline_data(int fd, struct f2fs_node *node_blk)
 {
-	if (write(fd, inline_data_addr(node_blk), MAX_INLINE_DATA(node_blk)) < 0)
+	if (write(fd, inline_data_addr(node_blk), MIN(node_blk->i.i_size, MAX_INLINE_DATA(node_blk))) < 0)
 		return -1;
 
 	return 0;
