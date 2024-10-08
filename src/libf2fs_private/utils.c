@@ -122,7 +122,7 @@ f2fs_getcon_ (struct f2fs_sb_info *sbi,
               struct f2fs_node *ent_node)
 {
   __u32 inum;
-  static char buff[8192];
+  static char buff[8192];  // FIXME
   int err;
 
   inum = le32_to_cpu(F2FS_NODE_FOOTER(ent_node)->ino);
