@@ -1,3 +1,7 @@
+/*
+ * for escaping path string in fscontexts
+ */
+
 #include <stdio.h>
 #include <string.h>
 
