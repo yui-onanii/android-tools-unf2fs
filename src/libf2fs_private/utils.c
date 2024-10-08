@@ -129,7 +129,9 @@ f2fs_getcaps_ (struct f2fs_sb_info *sbi,
                         F2FS_XATTR_INDEX_SECURITY,
                         XATTR_CAPS_SUFFIX,
                         &cap_data, sizeof (cap_data));
-  if (err == -ENODATA || err == -EUCLEAN)
+  if (err == -ENODATA ||
+      err == -EUCLEAN ||
+      err == -ENOMEM)
     return 0;
 
   if (err < 0)
@@ -152,7 +154,9 @@ f2fs_getcon_ (struct f2fs_sb_info *sbi,
                         F2FS_XATTR_INDEX_SECURITY,
                         XATTR_SELINUX_SUFFIX, buff,
                         sizeof (buff) - 1  /* NUL */ );
-  if (err == -ENODATA || err == -EUCLEAN)
+  if (err == -ENODATA ||
+      err == -EUCLEAN ||
+      err == -ENOMEM)
     return NULL;
 
   if (err < 0)
