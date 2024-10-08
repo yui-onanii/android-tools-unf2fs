@@ -15,7 +15,7 @@ static struct f2fs_xattr_entry *__find_xattr(void *base_addr,
 	list_for_each_xattr(entry, base_addr) {
 		if ((void *)(entry) + sizeof(__u32) > last_base_addr ||
 			(void *)XATTR_NEXT_ENTRY(entry) > last_base_addr) {
-			MSG(0, "xattr entry crosses the end of xattr space\n");
+			//MSG(0, "xattr entry crosses the end of xattr space\n");
 			return NULL;
 		}
 
