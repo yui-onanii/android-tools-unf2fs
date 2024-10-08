@@ -6,6 +6,13 @@ based on f2fs-tools; and android-tools for build system.
 
 
 
+TODO
+====
+
+- LZ4 decompression support (coming soon)
+
+
+
 Dependencies
 ============
 
