@@ -12,6 +12,8 @@
 #include "node.h"
 #include "xattr.h"
 
+#define XATTR_CAPS_SUFFIX   "capability"
+
 typedef void (*f2fs_ldir_cb)(const char *name,
                              __u16 name_len,
                              __u8 file_type,
