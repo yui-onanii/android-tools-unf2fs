@@ -1,4 +1,7 @@
-// copied from f2fs-tools/fsck/xattr.c
+// modified from f2fs-tools/fsck/xattr.c
+//
+// removed xattr setting logics
+// added code for dumping xattr value
 
 #include "f2fs_private.h"
 
@@ -25,18 +28,18 @@ static struct f2fs_xattr_entry *__find_xattr(void *base_addr,
 	return entry;
 }
 
-int f2fs_setxattr(struct f2fs_sb_info *sbi, nid_t ino, int index, const char *name,
-		const void *value, size_t size, int flags)
+int /* f2fs_setxattr */ f2fs_getxattr_(struct f2fs_sb_info *sbi, nid_t ino, int index, const char *name,
+		/* const */ void *value /* , size_t size, int flags */)
 {
 	struct f2fs_node *inode;
 	void *base_addr;
 	void *last_base_addr;
-	struct f2fs_xattr_entry *here, *last;
+	struct f2fs_xattr_entry *here /*, *last */;
 	struct node_info ni;
 	int error = 0;
 	int len;
-	int found, newsize;
-	__u32 new_hsize;
+	int found /* , newsize;
+	__u32 new_hsize */ ;
 	int ret;
 
 	if (name == NULL)
@@ -47,7 +50,7 @@ int f2fs_setxattr(struct f2fs_sb_info *sbi, nid_t ino, int index, const char *na
 
 	len = strlen(name);
 
-	if (len > F2FS_NAME_LEN || size > MAX_VALUE_LEN)
+	if (len > F2FS_NAME_LEN /* || size > MAX_VALUE_LEN */ )
 		return -ERANGE;
 
 	if (ino < 3)
@@ -76,43 +79,43 @@ int f2fs_setxattr(struct f2fs_sb_info *sbi, nid_t ino, int index, const char *na
 
 	found = IS_XATTR_LAST_ENTRY(here) ? 0 : 1;
 
-	if ((flags & XATTR_REPLACE) && !found) {
+	if (/* (flags & XATTR_REPLACE) && */ !found) {
 		error = -ENODATA;
 		goto exit;
-	} else if ((flags & XATTR_CREATE) && found) {
+	} /*else if ((flags & XATTR_CREATE) && found) {
 		error = -EEXIST;
 		goto exit;
-	}
+	}*/
 
-	last = here;
+	/*last = here;
 	while (!IS_XATTR_LAST_ENTRY(last))
 		last = XATTR_NEXT_ENTRY(last);
 
-	newsize = XATTR_ALIGN(sizeof(struct f2fs_xattr_entry) + len + size);
+	newsize = XATTR_ALIGN(sizeof(struct f2fs_xattr_entry) + len + size);*/
 
 	/* 1. Check space */
-	if (value) {
-		int free;
+	/*if (value) {
+		int free;*/
 		/*
 		 * If value is NULL, it is remove operation.
 		 * In case of update operation, we calculate free.
 		 */
-		free = MIN_OFFSET - ((char *)last - (char *)base_addr);
+		/*free = MIN_OFFSET - ((char *)last - (char *)base_addr);
 		if (found)
 			free = free + ENTRY_SIZE(here);
 		if (free < newsize) {
 			error = -ENOSPC;
 			goto exit;
 		}
-	}
+	}*/
 
 	/* 2. Remove old entry */
-	if (found) {
+	//if (found) {
 		/*
 		 * If entry if sound, remove old entry.
 		 * If not found, remove operation is not needed
 		 */
-		struct f2fs_xattr_entry *next = XATTR_NEXT_ENTRY(here);
+		/*struct f2fs_xattr_entry *next = XATTR_NEXT_ENTRY(here);
 		int oldsize = ENTRY_SIZE(here);
 
 		memmove(here, next, (char *)last - (char *)next);
@@ -121,29 +124,32 @@ int f2fs_setxattr(struct f2fs_sb_info *sbi, nid_t ino, int index, const char *na
 
 	}
 
-	new_hsize = (char *)last - (char *)base_addr;
+	new_hsize = (char *)last - (char *)base_addr;*/
 
 	/* 3. Write new entry */
-	if (value) {
+	//if (value) {
 		char *pval;
 		/*
 		 * Before we come here, old entry is removed.
 		 * We just write new entry.
 		 */
-		memset(last, 0, newsize);
+		/*memset(last, 0, newsize);
 		last->e_name_index = index;
 		last->e_name_len = len;
-		memcpy(last->e_name, name, len);
-		pval = last->e_name + len;
-		memcpy(pval, value, size);
+		memcpy(last->e_name, name, len);*/
+		pval = /* last */ here->e_name + len;
+		/*memcpy(pval, value, size);
 		last->e_value_size = cpu_to_le16(size);
 		new_hsize += newsize;
 	}
 
-	write_all_xattrs(sbi, inode, new_hsize, base_addr);
+	write_all_xattrs(sbi, inode, new_hsize, base_addr);*/
 
 	/* inode need update */
-	ASSERT(update_inode(sbi, inode, &ni.blk_addr) >= 0);
+	//ASSERT(update_inode(sbi, inode, &ni.blk_addr) >= 0);
+
+	// ADDED BY UNF2FS: copy out xattr value
+	memcpy (value, pval, here->e_value_size);
 exit:
 	free(inode);
 	free(base_addr);

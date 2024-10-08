@@ -54,6 +54,12 @@ f2fs_listdir_ (struct f2fs_sb_info *sbi,
                struct f2fs_node *dir,
                f2fs_ldir_cb cb);
 
+int
+f2fs_getxattr_ (struct f2fs_sb_info *sbi,
+                nid_t ino, int index,
+                const char *name,
+                void *buff);
+
 uint64_t
 f2fs_getcaps_ (struct f2fs_node *ent_node);
 
