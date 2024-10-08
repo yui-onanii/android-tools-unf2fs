@@ -58,7 +58,7 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
   off_t off;
   __u64 size;
   void *ptr;
-  __u32 inum;
+  nid_t inum;
 
   if ((ret = fstat (out_fd, &fs)) < 0)
     goto out;
@@ -120,7 +120,7 @@ uint64_t
 f2fs_getcaps_ (struct f2fs_sb_info *sbi,
                struct f2fs_node *ent_node)
 {
-  __u32 inum;
+  nid_t inum;
   struct vfs_cap_data cap_data;
   int err;
 
@@ -144,7 +144,7 @@ const char *
 f2fs_getcon_ (struct f2fs_sb_info *sbi,
               struct f2fs_node *ent_node)
 {
-  __u32 inum;
+  nid_t inum;
   static char buff[8192];  // FIXME
   int err;
 
