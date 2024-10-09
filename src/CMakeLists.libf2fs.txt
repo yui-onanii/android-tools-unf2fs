@@ -30,4 +30,4 @@ add_library(libf2fs_private STATIC
 target_include_directories(libf2fs_private PUBLIC
 	libf2fs_private)
 target_link_libraries(libf2fs_private PUBLIC
-	libf2fs_extras)
+	PkgConfig::liblz4 libf2fs_extras)
