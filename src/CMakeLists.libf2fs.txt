@@ -22,6 +22,7 @@ target_link_libraries(libf2fs_extras PUBLIC
 
 add_library(libf2fs_private STATIC
 	libf2fs_private/utils.c
+	libf2fs_private/decompr.c
 	libf2fs_private/xattr.c
 	libf2fs_private/caps.c
 	libf2fs_private/symlink.c
