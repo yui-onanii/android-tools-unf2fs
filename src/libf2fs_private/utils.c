@@ -4,6 +4,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
@@ -83,6 +84,14 @@ f2fs_sendfile_ (struct f2fs_sb_info *sbi,
   }
   else
   {
+    if (le32_to_cpu(file_node->i.i_flags) & F2FS_COMPR_FL)
+    {
+      // TODO: support compressed files
+      printf ("Compressed File! Support Coming Soon!\n");
+      ret = -1;
+      goto out;
+    }
+
     // f2fs_read want a buffer instead of a fd
 
     ptr = mmap (NULL, off + size, PROT_WRITE,

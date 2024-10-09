@@ -171,6 +171,10 @@ unf2fs_main (const char *input,
     goto out_err;
   }
 
+  if (c.feature & F2FS_FEATURE_COMPRESSION)
+    printf ("WARN: Compression Is Present, "
+            "Some Files Might Not Extract.\n");
+
   if (extract_setup (input, out_path) < 0)
     goto out;
   do_unfs (sbi);
