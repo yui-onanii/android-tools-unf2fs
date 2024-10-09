@@ -1,10 +1,10 @@
 /*
- * copied from f2fs-tools/fsck/segment.c
+ * modified from f2fs-tools/fsck/segment.c
  */
 
 #include "f2fs_private.h"
 
-u64 f2fs_read(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+u64 /* f2fs_read */ f2fs_read_decompr(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
 					u64 count, pgoff_t offset)
 {
 	struct dnode_of_data dn;
