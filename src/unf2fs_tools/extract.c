@@ -94,6 +94,11 @@ extract_one_file (struct f2fs_sb_info *sbi,
     }
     goto write_config;
   }
+  else if (!LINUX_S_ISREG(mode))
+  {
+    err("not a regular file: %s\n", path);
+    return -1;
+  }
 
   if ((fd = open (name,
                   O_RDWR | O_CREAT | O_TRUNC,
