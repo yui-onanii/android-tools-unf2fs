@@ -161,6 +161,8 @@ include(CMakeLists.mke2fs.txt)
 #include(CMakeLists.libufdt.txt)
 #include(CMakeLists.avb.txt)
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../src ${CMAKE_CURRENT_BINARY_DIR}/src)
+
 # Targets which should be installed by `make install`.
 install(TARGETS
 	"${ANDROID_MKE2FS_NAME}"
