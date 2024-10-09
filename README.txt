@@ -40,6 +40,17 @@ pass `-DSTATIC_BUILD=ON` to cmake for static build (Requires libXXX.a)
 
 
 
+Source Tarballs
+===============
+
+New source tarballs can be created from the Git repository using:
+
+        $ mkdir build && cd build
+        $ cmake ..
+        $ make package_source
+
+
+
 Tested Targets
 ==============
 
